@@ -59,4 +59,10 @@
         android:text="@string/click_to_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/fbla_logo" />
 </LinearLayout>
