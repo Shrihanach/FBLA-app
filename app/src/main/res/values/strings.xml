@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FBLA App</string>
+    <string name="app_name">FBLA Connect</string>
     <string name="login">Login</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
@@ -8,4 +8,75 @@
     <string name="click_to_register">Click to register</string>
     <string name="logout">Logout</string>
     <string name="select_a_date_to_see_fbla_events">Select a date to see FBLA events</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_calendar">Events</string>
+    <string name="nav_resources">Resources</string>
+    <string name="nav_social">Social</string>
+    <string name="nav_profile">Profile</string>
+    
+    <!-- Home/News Screen -->
+    <string name="announcements">Announcements</string>
+    <string name="share">Share</string>
+    <string name="no_announcements">No announcements yet</string>
+    
+    <!-- Profile Screen -->
+    <string name="member_profile">Member Profile</string>
+    <string name="name">Name</string>
+    <string name="chapter">Chapter</string>
+    <string name="role">Role</string>
+    <string name="save_profile">Save Profile</string>
+    <string name="profile_saved">Profile saved successfully!</string>
+    <string name="enter_your_name">Enter your name</string>
+    <string name="enter_your_chapter">Enter your chapter name</string>
+    <string name="select_your_role">Select your role</string>
+    
+    <!-- Calendar/Events Screen -->
+    <string name="events">Events</string>
+    <string name="add_event">Add Event</string>
+    <string name="event_title">Event Title</string>
+    <string name="event_date">Event Date (YYYY-MM-DD)</string>
+    <string name="delete">Delete</string>
+    <string name="no_events">No events scheduled</string>
+    <string name="event_added">Event added successfully!</string>
+    <string name="event_deleted">Event deleted</string>
+    <string name="title_min_chars">Title must be at least 3 characters</string>
+    <string name="invalid_date_format">Invalid date format. Use YYYY-MM-DD</string>
+    <string name="enter_event_title">Enter event title</string>
+    
+    <!-- Resources Screen -->
+    <string name="resources">FBLA Resources</string>
+    <string name="bookmark">Bookmark</string>
+    <string name="bookmarked">Bookmarked!</string>
+    <string name="removed_bookmark">Bookmark removed</string>
+    <string name="open_link">Open</string>
+    <string name="bookmarks">My Bookmarks</string>
+    <string name="all_resources">All Resources</string>
+    
+    <!-- Social Screen -->
+    <string name="social_connect">Connect With Us</string>
+    <string name="chapter_social">Chapter Social Media</string>
+    <string name="national_fbla">National FBLA</string>
+    
+    <!-- Roles -->
+    <string name="role_member">Member</string>
+    <string name="role_president">President</string>
+    <string name="role_vice_president">Vice President</string>
+    <string name="role_secretary">Secretary</string>
+    <string name="role_treasurer">Treasurer</string>
+    <string name="role_reporter">Reporter</string>
+    <string name="role_historian">Historian</string>
+    <string name="role_parliamentarian">Parliamentarian</string>
+    <string name="role_advisor">Advisor</string>
+    
+    <!-- Announcements -->
+    <string name="announcement_1_title">State Leadership Conference Registration Open</string>
+    <string name="announcement_1_desc">Registration for the State Leadership Conference is now open! Early bird deadline is March 1st. Contact your advisor for more details.</string>
+    <string name="announcement_2_title">Competitive Events Practice</string>
+    <string name="announcement_2_desc">Weekly competitive events practice sessions every Wednesday at 3:30 PM in Room 204. All members welcome!</string>
+    <string name="announcement_3_title">Community Service Project</string>
+    <string name="announcement_3_desc">Join us for our monthly community service project this Saturday at the local food bank. Sign up sheet in the FBLA room.</string>
+    <string name="announcement_4_title">National FBLA Week</string>
+    <string name="announcement_4_desc">National FBLA Week is coming up! Get ready for spirit days, workshops, and special events. Check the calendar for details.</string>
 </resources>

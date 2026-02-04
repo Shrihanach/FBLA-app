@@ -2,4 +2,21 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    
+    <!-- FBLA Brand Colors -->
+    <color name="fbla_blue">#003366</color>
+    <color name="fbla_blue_light">#1a4d80</color>
+    <color name="fbla_blue_dark">#00264d</color>
+    <color name="fbla_gold">#C5A900</color>
+    <color name="fbla_gold_light">#e0c200</color>
+    
+    <!-- UI Colors -->
+    <color name="background_primary">#F5F7FA</color>
+    <color name="background_card">#FFFFFF</color>
+    <color name="text_primary">#1A1A2E</color>
+    <color name="text_secondary">#5C5C7A</color>
+    <color name="divider">#E0E0E0</color>
+    <color name="success">#2E7D32</color>
+    <color name="error">#C62828</color>
+    <color name="nav_unselected">#9E9E9E</color>
 </resources>

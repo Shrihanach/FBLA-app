@@ -1,9 +1,50 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Base application theme inheriting from Material3 (which is AppCompat compatible) -->
     <style name="Base.Theme.FBLAApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/fbla_blue</item>
+        <item name="colorPrimaryDark">@color/fbla_blue_dark</item>
+        <item name="colorAccent">@color/fbla_gold</item>
+        <item name="colorSecondary">@color/fbla_gold</item>
+        <item name="android:statusBarColor">@color/fbla_blue_dark</item>
+        <item name="android:navigationBarColor">@color/white</item>
+        <item name="android:windowBackground">@color/background_primary</item>
     </style>
 
     <style name="Theme.FBLAApp" parent="Base.Theme.FBLAApp" />
+    
+    <!-- Main app theme with action bar -->
+    <style name="Theme.FBLAApp.Light" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/fbla_blue</item>
+        <item name="colorPrimaryDark">@color/fbla_blue_dark</item>
+        <item name="colorAccent">@color/fbla_gold</item>
+        <item name="android:statusBarColor">@color/fbla_blue_dark</item>
+    </style>
+    
+    <!-- No action bar variant -->
+    <style name="Theme.FBLAApp.NoActionBar" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/fbla_blue</item>
+        <item name="colorPrimaryDark">@color/fbla_blue_dark</item>
+        <item name="colorAccent">@color/fbla_gold</item>
+        <item name="android:statusBarColor">@color/fbla_blue_dark</item>
+    </style>
+    
+    <!-- Card Style -->
+    <style name="CardStyle">
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">4dp</item>
+        <item name="cardBackgroundColor">@color/background_card</item>
+    </style>
+    
+    <!-- Button Style -->
+    <style name="FBLAButton" parent="Widget.Material3.Button">
+        <item name="android:backgroundTint">@color/fbla_blue</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
+    
+    <style name="FBLAButtonGold" parent="Widget.Material3.Button">
+        <item name="android:backgroundTint">@color/fbla_gold</item>
+        <item name="android:textColor">@color/fbla_blue_dark</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
 </resources>
