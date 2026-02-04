@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/dialogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add New Event"
+        android:textColor="@color/fbla_blue"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/textSelectedDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="February 4, 2026"
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp"
+        android:layout_marginBottom="20dp" />
+
+    <!-- Event Title -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Event Title"
+        app:boxStrokeColor="@color/fbla_blue"
+        app:hintTextColor="@color/fbla_blue"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_marginBottom="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editEventTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:textColor="@color/text_primary" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Event Date -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Date (YYYY-MM-DD)"
+        app:boxStrokeColor="@color/fbla_blue"
+        app:hintTextColor="@color/fbla_blue"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_marginBottom="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editEventDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="date"
+            android:textColor="@color/text_primary" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Event Time -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Time (optional, e.g. 9:30am)"
+        app:boxStrokeColor="@color/fbla_blue"
+        app:hintTextColor="@color/fbla_blue"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_marginBottom="20dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editEventTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:textColor="@color/text_primary" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Event Color -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event Color"
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp"
+        android:layout_marginBottom="12dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="start"
+        android:layout_marginBottom="24dp">
+
+        <View
+            android:id="@+id/colorBlue"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/color_circle_blue"
+            android:layout_marginEnd="16dp" />
+
+        <View
+            android:id="@+id/colorGreen"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/color_circle_green"
+            android:layout_marginEnd="16dp" />
+
+        <View
+            android:id="@+id/colorOrange"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/color_circle_orange"
+            android:layout_marginEnd="16dp" />
+
+        <View
+            android:id="@+id/colorPurple"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/color_circle_purple"
+            android:layout_marginEnd="16dp" />
+
+        <View
+            android:id="@+id/colorTeal"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/color_circle_teal" />
+
+    </LinearLayout>
+
+    <!-- Error Text -->
+    <TextView
+        android:id="@+id/textError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/error"
+        android:textSize="12sp"
+        android:visibility="gone"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:textColor="@color/text_secondary"
+            style="@style/Widget.Material3.Button.TextButton" />
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save Event"
+            android:backgroundTint="@color/fbla_blue"
+            style="@style/Widget.Material3.Button" />
+
+    </LinearLayout>
+
+</LinearLayout>

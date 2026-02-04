@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:minHeight="90dp"
+    android:padding="2dp"
+    android:background="?attr/selectableItemBackground">
+
+    <!-- Day Number -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/textDayNumber"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp" />
+
+    </FrameLayout>
+
+    <!-- Events Container -->
+    <LinearLayout
+        android:id="@+id/eventsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="2dp" />
+
+</LinearLayout>
