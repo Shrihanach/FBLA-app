@@ -7,4 +7,5 @@
     <string name="click_to_login">Click to login</string>
     <string name="click_to_register">Click to register</string>
     <string name="logout">Logout</string>
+    <string name="select_a_date_to_see_fbla_events">Select a date to see FBLA events</string>
 </resources>
