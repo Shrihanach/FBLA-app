@@ -3,6 +3,7 @@ package com.example.fblaapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -10,94 +11,127 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.example.fblaapp.data.AuthRepository;
+import com.example.fblaapp.data.UserEntity;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class Login extends AppCompatActivity {
 
-    TextInputEditText editTextEmail, editTextPassword;
-    Button buttonLogin;
-    FirebaseAuth mAuth;
-    ProgressBar progressBar;
-    TextView textView;
+    private TextInputEditText editTextEmail, editTextPassword;
+    private Button buttonLogin;
+    private ProgressBar progressBar;
+    private TextView textViewRegister;
+    private AuthRepository authRepository;
 
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-            startActivity(intent);
-            finish();
+        // Check if user is already logged in
+        if (authRepository != null && authRepository.isLoggedIn()) {
+            navigateToHome();
         }
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
 
-        mAuth = FirebaseAuth.getInstance();
+        // Initialize AuthRepository
+        authRepository = AuthRepository.getInstance(this);
+
+        // Check if already logged in
+        if (authRepository.isLoggedIn()) {
+            navigateToHome();
+            return;
+        }
+
+        initViews();
+        setupListeners();
+        setupWindowInsets();
+    }
+
+    private void initViews() {
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         buttonLogin = findViewById(R.id.btn_login);
         progressBar = findViewById(R.id.progressBar);
-        textView = findViewById(R.id.registerNow);
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Register.class);
-                startActivity(intent);
-                finish();
-            }
+        textViewRegister = findViewById(R.id.registerNow);
+    }
+
+    private void setupListeners() {
+        // Register link click
+        textViewRegister.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), Register.class);
+            startActivity(intent);
+            finish();
         });
 
-        buttonLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                String email, password;
-                email = String.valueOf(editTextEmail.getText());
-                password = String.valueOf(editTextPassword.getText());
+        // Login button click
+        buttonLogin.setOnClickListener(v -> attemptLogin());
+    }
 
-                if (TextUtils.isEmpty(email)){
-                    Toast.makeText(Login.this, "Enter email", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+    private void attemptLogin() {
+        String email = editTextEmail.getText() != null ? 
+                editTextEmail.getText().toString().trim() : "";
+        String password = editTextPassword.getText() != null ? 
+                editTextPassword.getText().toString() : "";
 
-                if (TextUtils.isEmpty(password)){
-                    Toast.makeText(Login.this, "Enter password", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+        // Validate email
+        if (TextUtils.isEmpty(email)) {
+            Toast.makeText(this, "Enter email", Toast.LENGTH_SHORT).show();
+            editTextEmail.requestFocus();
+            return;
+        }
 
-                mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressBar.setVisibility(View.GONE);
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                } else {
-                                    Toast.makeText(Login.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-            }
-        });
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(this, "Enter a valid email address", Toast.LENGTH_SHORT).show();
+            editTextEmail.requestFocus();
+            return;
+        }
+
+        // Validate password
+        if (TextUtils.isEmpty(password)) {
+            Toast.makeText(this, "Enter password", Toast.LENGTH_SHORT).show();
+            editTextPassword.requestFocus();
+            return;
+        }
+
+        // Show progress
+        progressBar.setVisibility(View.VISIBLE);
+        buttonLogin.setEnabled(false);
+
+        // Attempt login
+        UserEntity user = authRepository.login(email, password);
+
+        progressBar.setVisibility(View.GONE);
+        buttonLogin.setEnabled(true);
+
+        if (user != null) {
+            // Login successful
+            Toast.makeText(this, "Login Successful! Welcome, " + user.getName(), 
+                    Toast.LENGTH_SHORT).show();
+            navigateToHome();
+        } else {
+            // Login failed
+            Toast.makeText(this, "Invalid login", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void navigateToHome() {
+        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void setupWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);

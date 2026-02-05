@@ -13,142 +13,153 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- Header with Month/Year and Navigation -->
+        <!-- Header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="16dp"
-            android:background="@color/fbla_blue">
+            android:background="@color/fbla_blue"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="16dp"
+            android:gravity="center_vertical">
 
-            <ImageButton
-                android:id="@+id/btnPrevMonth"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@android:drawable/ic_media_previous"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Previous Month"
-                app:tint="@color/white" />
-
-            <TextView
-                android:id="@+id/textMonthYear"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="February 2026"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/events"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textRoleInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="FBLA Chapter Events"
+                    android:textColor="@color/fbla_gold"
+                    android:textSize="13sp"
+                    android:layout_marginTop="2dp" />
+
+            </LinearLayout>
+
+            <!-- Selected Date Display -->
+            <TextView
+                android:id="@+id/textSelectedDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="All Events"
                 android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:gravity="center" />
-
-            <ImageButton
-                android:id="@+id/btnNextMonth"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@android:drawable/ic_media_next"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Next Month"
-                app:tint="@color/white" />
+                android:textSize="14sp"
+                android:background="@drawable/date_badge_background"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp" />
 
         </LinearLayout>
 
-        <!-- Day of Week Headers -->
+        <!-- Calendar View -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/white">
+
+            <CalendarView
+                android:id="@+id/calendarView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:firstDayOfWeek="1"
+                android:dateTextAppearance="@style/CalendarDateStyle"
+                android:weekDayTextAppearance="@style/CalendarWeekDayStyle" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Upcoming Events Section Header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="@color/white"
-            android:paddingHorizontal="4dp"
-            android:elevation="2dp">
+            android:paddingHorizontal="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp"
+            android:gravity="center_vertical">
 
             <TextView
+                android:id="@+id/textEventsHeader"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="SUN"
-                android:textColor="#E74C3C"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:padding="12dp" />
+                android:text="Upcoming Events"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <TextView
-                android:layout_width="0dp"
+                android:id="@+id/textShowAll"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="MON"
-                android:textColor="@color/text_secondary"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:padding="12dp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="TUE"
-                android:textColor="@color/text_secondary"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:padding="12dp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="WED"
-                android:textColor="@color/text_secondary"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:padding="12dp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="THU"
-                android:textColor="@color/text_secondary"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:padding="12dp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="FRI"
-                android:textColor="@color/text_secondary"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:padding="12dp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="SAT"
-                android:textColor="@color/text_secondary"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:padding="12dp" />
+                android:text="Show All"
+                android:textColor="@color/fbla_blue"
+                android:textSize="14sp"
+                android:padding="8dp"
+                android:background="?attr/selectableItemBackground"
+                android:visibility="gone" />
 
         </LinearLayout>
 
-        <!-- Calendar Grid -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerCalendar"
+        <!-- Empty State -->
+        <LinearLayout
+            android:id="@+id/layoutEmpty"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@color/white"
-            android:paddingHorizontal="4dp" />
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone"
+            android:padding="24dp">
+
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@android:drawable/ic_menu_my_calendar"
+                android:alpha="0.3"
+                android:contentDescription="No events" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_events"
+                android:textColor="@color/text_secondary"
+                android:textSize="16sp"
+                android:layout_marginTop="12dp" />
+
+            <TextView
+                android:id="@+id/textEmptyHint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Officers can add events using the + button"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <!-- Events RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvEvents"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingHorizontal="12dp"
+            android:paddingBottom="8dp"
+            android:clipToPadding="false" />
 
         <!-- Bottom Navigation -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -163,7 +174,7 @@
 
     </LinearLayout>
 
-    <!-- Add Event FAB -->
+    <!-- Add Event FAB (Only visible to Officers) -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddEvent"
         android:layout_width="wrap_content"
@@ -172,6 +183,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="72dp"
         android:src="@android:drawable/ic_input_add"
+        android:visibility="gone"
         app:backgroundTint="@color/fbla_blue"
         app:tint="@color/white"
         android:contentDescription="Add Event" />

@@ -6,7 +6,10 @@
     android:layout_marginBottom="12dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="2dp"
-    app:cardBackgroundColor="@color/background_card">
+    app:cardBackgroundColor="@color/background_card"
+    android:foreground="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,33 +18,13 @@
         android:padding="16dp"
         android:gravity="center_vertical">
 
-        <!-- Date Badge -->
-        <LinearLayout
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:orientation="vertical"
-            android:background="@drawable/date_badge_background"
-            android:gravity="center"
-            android:padding="8dp">
-
-            <TextView
-                android:id="@+id/textMonth"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:text="MAR" />
-
-            <TextView
-                android:id="@+id/textDay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:text="15" />
-
-        </LinearLayout>
+        <!-- Color indicator -->
+        <View
+            android:id="@+id/viewColorIndicator"
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:minHeight="60dp"
+            android:background="@color/fbla_blue" />
 
         <!-- Event Info -->
         <LinearLayout
@@ -49,37 +32,102 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:layout_marginStart="16dp">
+            android:layout_marginStart="12dp">
 
             <TextView
-                android:id="@+id/textEventTitle"
+                android:id="@+id/tvTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="Event Title"
                 android:textColor="@color/text_primary"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:text="Event Title" />
+                android:maxLines="2"
+                android:ellipsize="end" />
 
-            <TextView
-                android:id="@+id/textEventDate"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_secondary"
-                android:textSize="14sp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="6dp">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@android:drawable/ic_menu_recent_history"
+                    app:tint="@color/text_secondary"
+                    android:contentDescription="Time" />
+
+                <TextView
+                    android:id="@+id/tvTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Feb 10, 2026 • 3:00 PM"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:layout_marginStart="6dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:layout_marginTop="4dp"
-                android:text="2025-03-15" />
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@android:drawable/ic_menu_mylocation"
+                    app:tint="@color/text_secondary"
+                    android:contentDescription="Location" />
+
+                <TextView
+                    android:id="@+id/tvLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Room 204"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:layout_marginStart="6dp"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <!-- Delete Button -->
-        <ImageButton
-            android:id="@+id/btnDelete"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@android:drawable/ic_menu_delete"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/delete"
-            app:tint="@color/error" />
+        <!-- Officer Actions -->
+        <LinearLayout
+            android:id="@+id/layoutActions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageButton
+                android:id="@+id/btnEdit"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@android:drawable/ic_menu_edit"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Edit Event"
+                app:tint="@color/fbla_blue" />
+
+            <ImageButton
+                android:id="@+id/btnDelete"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@android:drawable/ic_menu_delete"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Delete Event"
+                app:tint="@color/error" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

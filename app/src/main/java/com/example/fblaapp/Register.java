@@ -3,6 +3,7 @@ package com.example.fblaapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -10,34 +11,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.example.fblaapp.data.AuthRepository;
+import com.example.fblaapp.data.UserEntity;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class Register extends AppCompatActivity {
-    TextInputEditText editTextEmail, editTextPassword;
-    Button buttonReg;
-    FirebaseAuth mAuth;
-    ProgressBar progressBar;
-    TextView textView;
+
+    private TextInputEditText editTextEmail, editTextPassword;
+    private Button buttonRegister;
+    private ProgressBar progressBar;
+    private TextView textViewLogin;
+    private AuthRepository authRepository;
 
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-            startActivity(intent);
-            finish();
+        // Check if user is already logged in
+        if (authRepository != null && authRepository.isLoggedIn()) {
+            navigateToHome();
         }
     }
 
@@ -46,64 +42,105 @@ public class Register extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register);
-        mAuth = FirebaseAuth.getInstance();
+
+        // Initialize AuthRepository
+        authRepository = AuthRepository.getInstance(this);
+
+        // Check if already logged in
+        if (authRepository.isLoggedIn()) {
+            navigateToHome();
+            return;
+        }
+
+        initViews();
+        setupListeners();
+        setupWindowInsets();
+    }
+
+    private void initViews() {
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
-        buttonReg = findViewById(R.id.btn_register);
+        buttonRegister = findViewById(R.id.btn_register);
         progressBar = findViewById(R.id.progressBar);
-        textView = findViewById(R.id.loginNow);
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Login.class);
-                startActivity(intent);
-                finish();
-            }
+        textViewLogin = findViewById(R.id.loginNow);
+    }
+
+    private void setupListeners() {
+        // Login link click
+        textViewLogin.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), Login.class);
+            startActivity(intent);
+            finish();
         });
 
+        // Register button click
+        buttonRegister.setOnClickListener(v -> attemptRegister());
+    }
 
-        buttonReg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                String email, password;
-                email = String.valueOf(editTextEmail.getText());
-                password = String.valueOf(editTextPassword.getText());
+    private void attemptRegister() {
+        String email = editTextEmail.getText() != null ? 
+                editTextEmail.getText().toString().trim() : "";
+        String password = editTextPassword.getText() != null ? 
+                editTextPassword.getText().toString() : "";
 
-                if (TextUtils.isEmpty(email)){
-                    Toast.makeText(Register.this, "Enter email", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+        // Validate email
+        if (TextUtils.isEmpty(email)) {
+            Toast.makeText(this, "Enter email", Toast.LENGTH_SHORT).show();
+            editTextEmail.requestFocus();
+            return;
+        }
 
-                if (TextUtils.isEmpty(password)){
-                    Toast.makeText(Register.this, "Enter password", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(this, "Enter a valid email address", Toast.LENGTH_SHORT).show();
+            editTextEmail.requestFocus();
+            return;
+        }
 
-                mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressBar.setVisibility((View.GONE));
-                                if (task.isSuccessful()) {
-                                    progressBar.setVisibility(View.GONE);
-                                    Toast.makeText(Register.this, "Account created.",
-                                            Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                } else {
-                                    // If sign in fails, display a message to the user.
-                                    Toast.makeText(Register.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
+        // Validate password
+        if (TextUtils.isEmpty(password)) {
+            Toast.makeText(this, "Enter password", Toast.LENGTH_SHORT).show();
+            editTextPassword.requestFocus();
+            return;
+        }
 
-                                }
-                            }
-                        });
+        if (password.length() < 6) {
+            Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show();
+            editTextPassword.requestFocus();
+            return;
+        }
 
+        // Show progress
+        progressBar.setVisibility(View.VISIBLE);
+        buttonRegister.setEnabled(false);
 
-            }
-        });
+        // Extract name from email (before @)
+        String name = email.split("@")[0];
+        name = name.substring(0, 1).toUpperCase() + name.substring(1);
+
+        // Attempt registration (default role is MEMBER)
+        UserEntity user = authRepository.register(name, email, password, UserEntity.ROLE_MEMBER);
+
+        progressBar.setVisibility(View.GONE);
+        buttonRegister.setEnabled(true);
+
+        if (user != null) {
+            // Registration successful
+            Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show();
+            navigateToHome();
+        } else {
+            // Registration failed (email already exists)
+            Toast.makeText(this, "Email already registered", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void navigateToHome() {
+        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void setupWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);

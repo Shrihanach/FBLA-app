@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -59,6 +64,21 @@
         <!-- Social Activity -->
         <activity
             android:name=".SocialActivity"
+            android:exported="false" />
+        
+        <!-- Add/Edit Event Activity -->
+        <activity
+            android:name=".AddEditEventActivity"
+            android:exported="false" />
+        
+        <!-- Event Detail Activity -->
+        <activity
+            android:name=".EventDetailActivity"
+            android:exported="false" />
+        
+        <!-- Reminder Broadcast Receiver -->
+        <receiver
+            android:name=".ReminderBroadcastReceiver"
             android:exported="false" />
             
     </application>

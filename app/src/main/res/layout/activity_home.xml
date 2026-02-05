@@ -1,58 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/background_primary"
     tools:context=".HomeActivity">
 
-    <!-- Header -->
+    <!-- Centered transparent FBLA logo background -->
+    <ImageView
+        android:layout_width="280dp"
+        android:layout_height="280dp"
+        android:layout_gravity="center"
+        android:src="@drawable/fbla_logo"
+        android:alpha="0.08"
+        android:scaleType="fitCenter"
+        android:contentDescription="FBLA Logo Background"
+        android:importantForAccessibility="no" />
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/fbla_blue"
-        android:padding="20dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="FBLA Connect"
-            android:textColor="@color/white"
-            android:textSize="28sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:background="@color/fbla_blue"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="16dp"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="FBLA Connect"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textRoleInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/announcements"
+                    android:textColor="@color/fbla_gold"
+                    android:textSize="13sp"
+                    android:layout_marginTop="2dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Empty State -->
+        <LinearLayout
+            android:id="@+id/layoutEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone"
+            android:padding="32dp">
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@android:drawable/ic_dialog_info"
+                android:alpha="0.3"
+                android:contentDescription="No announcements" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_announcements"
+                android:textColor="@color/text_secondary"
+                android:textSize="18sp"
+                android:layout_marginTop="16dp" />
+
+            <TextView
+                android:id="@+id/textEmptyHint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Officers can post announcements"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+
+        <!-- Announcements List -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerAnnouncements"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="12dp"
+            android:clipToPadding="false" />
+
+        <!-- Bottom Navigation -->
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigation"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/announcements"
-            android:textColor="@color/fbla_gold"
-            android:textSize="16sp"
-            android:layout_marginTop="4dp" />
+            android:background="@color/white"
+            app:itemIconTint="@drawable/nav_item_color"
+            app:itemTextColor="@drawable/nav_item_color"
+            app:menu="@menu/bottom_navigation"
+            app:labelVisibilityMode="labeled" />
 
     </LinearLayout>
 
-    <!-- Announcements List -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerAnnouncements"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="12dp"
-        android:clipToPadding="false" />
-
-    <!-- Bottom Navigation -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigation"
-        android:layout_width="match_parent"
+    <!-- Add Announcement FAB (Only visible to Officers) -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddAnnouncement"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:itemIconTint="@drawable/nav_item_color"
-        app:itemTextColor="@drawable/nav_item_color"
-        app:menu="@menu/bottom_navigation"
-        app:labelVisibilityMode="labeled" />
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="72dp"
+        android:src="@android:drawable/ic_input_add"
+        android:visibility="gone"
+        app:backgroundTint="@color/fbla_blue"
+        app:tint="@color/white"
+        android:contentDescription="Add Announcement" />
 
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

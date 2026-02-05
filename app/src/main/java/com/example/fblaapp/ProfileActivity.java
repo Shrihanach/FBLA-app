@@ -7,12 +7,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.fblaapp.data.AuthRepository;
+import com.example.fblaapp.data.UserEntity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,8 +27,10 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText editName, editChapter;
     private Spinner spinnerRole;
     private Button btnSave, btnLogout;
+    private TextView textUserEmail, textUserRole;
     private BottomNavigationView bottomNavigation;
     private SharedPreferences prefs;
+    private AuthRepository authRepository;
 
     private String[] roles;
 
@@ -36,8 +40,16 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        
+        authRepository = AuthRepository.getInstance(this);
+
+        // Check if logged in
+        if (!authRepository.isLoggedIn()) {
+            navigateToLogin();
+            return;
+        }
+
         initViews();
+        displayUserInfo();
         setupRoleSpinner();
         loadProfile();
         setupListeners();
@@ -51,6 +63,43 @@ public class ProfileActivity extends AppCompatActivity {
         btnSave = findViewById(R.id.btnSave);
         btnLogout = findViewById(R.id.btnLogout);
         bottomNavigation = findViewById(R.id.bottomNavigation);
+        
+        // These might not exist in the layout, so check first
+        textUserEmail = findViewById(R.id.textUserEmail);
+        textUserRole = findViewById(R.id.textUserRole);
+    }
+
+    private void displayUserInfo() {
+        UserEntity currentUser = authRepository.getCurrentUser();
+        if (currentUser != null) {
+            // Pre-fill name from user account if profile name is empty
+            String profileName = getProfileName();
+            if (profileName == null || profileName.isEmpty()) {
+                editName.setText(currentUser.getName());
+            }
+
+            // Display user email and role if views exist
+            if (textUserEmail != null) {
+                textUserEmail.setText(currentUser.getEmail());
+            }
+            if (textUserRole != null) {
+                String roleDisplay = currentUser.isOfficer() ? "Officer" : "Member";
+                textUserRole.setText(roleDisplay);
+            }
+        }
+    }
+
+    private String getProfileName() {
+        String profileJson = prefs.getString(KEY_PROFILE, null);
+        if (profileJson != null) {
+            try {
+                JSONObject profile = new JSONObject(profileJson);
+                return profile.optString("name", "");
+            } catch (JSONException e) {
+                return "";
+            }
+        }
+        return "";
     }
 
     private void setupRoleSpinner() {
@@ -82,7 +131,7 @@ public class ProfileActivity extends AppCompatActivity {
                 JSONObject profile = new JSONObject(profileJson);
                 editName.setText(profile.optString("name", ""));
                 editChapter.setText(profile.optString("chapter", ""));
-                
+
                 String savedRole = profile.optString("role", "");
                 for (int i = 0; i < roles.length; i++) {
                     if (roles[i].equals(savedRole)) {
@@ -120,7 +169,12 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void logout() {
-        FirebaseAuth.getInstance().signOut();
+        // Logout from AuthRepository
+        authRepository.logout();
+        navigateToLogin();
+    }
+
+    private void navigateToLogin() {
         Intent intent = new Intent(this, Login.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

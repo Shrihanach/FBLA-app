@@ -5,33 +5,29 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.example.fblaapp.data.AuthRepository;
 
 /**
  * MainActivity - Entry point after login
- * Redirects to HomeActivity for the main app experience
+ * Redirects to HomeActivity or Login based on auth state.
  */
 public class MainActivity extends AppCompatActivity {
-
-    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        auth = FirebaseAuth.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
+        AuthRepository authRepository = AuthRepository.getInstance(this);
 
         // Check if user is logged in
-        if (user == null) {
-            // Not logged in, go to Login
-            startActivity(new Intent(this, Login.class));
-        } else {
+        if (authRepository.isLoggedIn()) {
             // Logged in, go to Home
             startActivity(new Intent(this, HomeActivity.class));
+        } else {
+            // Not logged in, go to Login
+            startActivity(new Intent(this, Login.class));
         }
-        
+
         finish();
     }
 }
