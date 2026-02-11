@@ -46,9 +46,12 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel:2.7.0")
     implementation("androidx.lifecycle:lifecycle-livedata:2.7.0")
     
-    // Keep Firebase for other features (optional - can remove if not needed)
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.inappmessaging)
+    // CircleImageView for profile pictures
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+    
+    // Firebase dependencies (commented out - uncomment if needed)
+    // implementation(libs.firebase.auth)
+    // implementation(libs.firebase.inappmessaging)
     
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
