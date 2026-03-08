@@ -6,16 +6,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/background_primary"
+    android:background="@color/white"
     tools:context=".SocialActivity">
 
-    <!-- Header -->
+    <!-- Header with curved bottom -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/fbla_blue"
-        android:padding="20dp"
+        android:background="@drawable/header_curved_background"
+        android:paddingTop="24dp"
+        android:paddingBottom="28dp"
         android:gravity="center">
 
         <TextView
@@ -23,7 +24,7 @@
             android:layout_height="wrap_content"
             android:text="@string/social_connect"
             android:textColor="@color/white"
-            android:textSize="28sp"
+            android:textSize="24sp"
             android:textStyle="bold" />
 
         <TextView
@@ -31,8 +32,15 @@
             android:layout_height="wrap_content"
             android:text="Follow FBLA on social media"
             android:textColor="@color/fbla_gold"
-            android:textSize="14sp"
+            android:textSize="13sp"
             android:layout_marginTop="4dp" />
+
+        <!-- Gold accent line -->
+        <View
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/gold_accent_line" />
 
     </LinearLayout>
 
@@ -52,8 +60,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/national_fbla"
-                android:textColor="@color/fbla_blue"
-                android:textSize="20sp"
+                android:textColor="@color/navy"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="12dp" />
 
@@ -61,10 +69,10 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
+                app:cardCornerRadius="16dp"
                 app:cardElevation="2dp"
                 app:cardBackgroundColor="@color/background_card"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="10dp">
 
                 <LinearLayout
                     android:id="@+id/btnFacebook"
@@ -76,8 +84,8 @@
                     android:background="?attr/selectableItemBackground">
 
                     <View
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
                         android:background="@drawable/social_facebook_bg" />
 
                     <LinearLayout
@@ -85,7 +93,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:layout_marginStart="16dp">
+                        android:layout_marginStart="14dp">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -98,9 +106,9 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@FBLA"
+                            android:text="\@FBLA"
                             android:textColor="@color/text_secondary"
-                            android:textSize="14sp" />
+                            android:textSize="13sp" />
 
                     </LinearLayout>
 
@@ -108,6 +116,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@android:drawable/ic_menu_send"
+                        app:tint="@color/cobalt"
                         android:contentDescription="Open" />
 
                 </LinearLayout>
@@ -118,10 +127,10 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
+                app:cardCornerRadius="16dp"
                 app:cardElevation="2dp"
                 app:cardBackgroundColor="@color/background_card"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="10dp">
 
                 <LinearLayout
                     android:id="@+id/btnTwitter"
@@ -133,8 +142,8 @@
                     android:background="?attr/selectableItemBackground">
 
                     <View
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
                         android:background="@drawable/social_twitter_bg" />
 
                     <LinearLayout
@@ -142,7 +151,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:layout_marginStart="16dp">
+                        android:layout_marginStart="14dp">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -155,9 +164,9 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@FBLA"
+                            android:text="\@FBLA"
                             android:textColor="@color/text_secondary"
-                            android:textSize="14sp" />
+                            android:textSize="13sp" />
 
                     </LinearLayout>
 
@@ -165,6 +174,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@android:drawable/ic_menu_send"
+                        app:tint="@color/cobalt"
                         android:contentDescription="Open" />
 
                 </LinearLayout>
@@ -175,10 +185,10 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
+                app:cardCornerRadius="16dp"
                 app:cardElevation="2dp"
                 app:cardBackgroundColor="@color/background_card"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="10dp">
 
                 <LinearLayout
                     android:id="@+id/btnInstagram"
@@ -190,8 +200,8 @@
                     android:background="?attr/selectableItemBackground">
 
                     <View
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
                         android:background="@drawable/social_instagram_bg" />
 
                     <LinearLayout
@@ -199,7 +209,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:layout_marginStart="16dp">
+                        android:layout_marginStart="14dp">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -212,9 +222,9 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@fbla_pbl"
+                            android:text="\@fbla_pbl"
                             android:textColor="@color/text_secondary"
-                            android:textSize="14sp" />
+                            android:textSize="13sp" />
 
                     </LinearLayout>
 
@@ -222,6 +232,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@android:drawable/ic_menu_send"
+                        app:tint="@color/cobalt"
                         android:contentDescription="Open" />
 
                 </LinearLayout>
@@ -232,10 +243,10 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
+                app:cardCornerRadius="16dp"
                 app:cardElevation="2dp"
                 app:cardBackgroundColor="@color/background_card"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="10dp">
 
                 <LinearLayout
                     android:id="@+id/btnLinkedIn"
@@ -247,8 +258,8 @@
                     android:background="?attr/selectableItemBackground">
 
                     <View
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
                         android:background="@drawable/social_linkedin_bg" />
 
                     <LinearLayout
@@ -256,7 +267,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:layout_marginStart="16dp">
+                        android:layout_marginStart="14dp">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -271,7 +282,7 @@
                             android:layout_height="wrap_content"
                             android:text="FBLA-PBL"
                             android:textColor="@color/text_secondary"
-                            android:textSize="14sp" />
+                            android:textSize="13sp" />
 
                     </LinearLayout>
 
@@ -279,6 +290,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@android:drawable/ic_menu_send"
+                        app:tint="@color/cobalt"
                         android:contentDescription="Open" />
 
                 </LinearLayout>
@@ -289,10 +301,10 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
+                app:cardCornerRadius="16dp"
                 app:cardElevation="2dp"
                 app:cardBackgroundColor="@color/background_card"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="10dp">
 
                 <LinearLayout
                     android:id="@+id/btnYouTube"
@@ -304,8 +316,8 @@
                     android:background="?attr/selectableItemBackground">
 
                     <View
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
                         android:background="@drawable/social_youtube_bg" />
 
                     <LinearLayout
@@ -313,7 +325,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:layout_marginStart="16dp">
+                        android:layout_marginStart="14dp">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -328,7 +340,7 @@
                             android:layout_height="wrap_content"
                             android:text="FBLA-PBL"
                             android:textColor="@color/text_secondary"
-                            android:textSize="14sp" />
+                            android:textSize="13sp" />
 
                     </LinearLayout>
 
@@ -336,19 +348,20 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@android:drawable/ic_menu_send"
+                        app:tint="@color/cobalt"
                         android:contentDescription="Open" />
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- FBLA Website -->
+            <!-- FBLA Website - Featured Card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
+                app:cardCornerRadius="16dp"
                 app:cardElevation="4dp"
-                app:cardBackgroundColor="@color/fbla_blue"
+                app:cardBackgroundColor="@color/navy"
                 android:layout_marginTop="8dp">
 
                 <LinearLayout
@@ -388,7 +401,7 @@
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:src="@android:drawable/ic_menu_send"
-                        app:tint="@color/white"
+                        app:tint="@color/fbla_gold"
                         android:contentDescription="Open" />
 
                 </LinearLayout>
@@ -404,7 +417,8 @@
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@drawable/bottom_nav_background"
+        android:elevation="8dp"
         app:itemIconTint="@drawable/nav_item_color"
         app:itemTextColor="@drawable/nav_item_color"
         app:menu="@menu/bottom_navigation"

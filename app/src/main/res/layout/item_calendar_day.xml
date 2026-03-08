@@ -3,34 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:minHeight="90dp"
-    android:padding="2dp"
-    android:background="?attr/selectableItemBackground">
+    android:gravity="center"
+    android:paddingVertical="4dp">
 
-    <!-- Day Number -->
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal">
+    <TextView
+        android:id="@+id/textDay"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:gravity="center"
+        android:textSize="14sp"
+        android:textColor="@color/text_primary" />
 
-        <TextView
-            android:id="@+id/textDayNumber"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:text="1"
-            android:textColor="@color/text_primary"
-            android:textSize="14sp" />
-
-    </FrameLayout>
-
-    <!-- Events Container -->
-    <LinearLayout
-        android:id="@+id/eventsContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="2dp" />
+    <View
+        android:id="@+id/dotIndicator"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/event_dot"
+        android:visibility="invisible" />
 
 </LinearLayout>

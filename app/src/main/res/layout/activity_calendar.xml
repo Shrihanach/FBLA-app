@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_primary"
+    android:background="@color/white"
     tools:context=".CalendarActivity">
 
     <LinearLayout
@@ -13,14 +13,15 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- Header -->
+        <!-- Header with curved bottom -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="@color/fbla_blue"
+            android:background="@drawable/header_curved_background"
             android:paddingHorizontal="20dp"
-            android:paddingVertical="16dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="24dp"
             android:gravity="center_vertical">
 
             <LinearLayout
@@ -55,28 +56,156 @@
                 android:layout_height="wrap_content"
                 android:text="All Events"
                 android:textColor="@color/white"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:background="@drawable/date_badge_background"
-                android:paddingHorizontal="12dp"
+                android:paddingHorizontal="14dp"
                 android:paddingVertical="6dp" />
 
         </LinearLayout>
 
-        <!-- Calendar View -->
+        <!-- Custom Calendar with event dots -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="0dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/white">
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/white"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="-12dp">
 
-            <CalendarView
-                android:id="@+id/calendarView"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:firstDayOfWeek="1"
-                android:dateTextAppearance="@style/CalendarDateStyle"
-                android:weekDayTextAppearance="@style/CalendarWeekDayStyle" />
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <!-- Month Navigation -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="4dp"
+                    android:paddingBottom="8dp">
+
+                    <ImageButton
+                        android:id="@+id/btnPrevMonth"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@android:drawable/ic_media_previous"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Previous month"
+                        app:tint="@color/navy" />
+
+                    <TextView
+                        android:id="@+id/textMonthYear"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="March 2026"
+                        android:textColor="@color/navy"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+
+                    <ImageButton
+                        android:id="@+id/btnNextMonth"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@android:drawable/ic_media_next"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Next month"
+                        app:tint="@color/navy" />
+
+                </LinearLayout>
+
+                <!-- Day of Week Headers -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="4dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Sun"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Mon"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Tue"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Wed"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Thu"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Fri"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Sat"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <!-- Calendar Day Grid -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerCalendar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:overScrollMode="never" />
+
+            </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -85,7 +214,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
+            android:paddingHorizontal="20dp"
             android:paddingTop="16dp"
             android:paddingBottom="8dp"
             android:gravity="center_vertical">
@@ -96,8 +225,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Upcoming Events"
-                android:textColor="@color/text_primary"
-                android:textSize="16sp"
+                android:textColor="@color/navy"
+                android:textSize="17sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -105,7 +234,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Show All"
-                android:textColor="@color/fbla_blue"
+                android:textColor="@color/cobalt"
                 android:textSize="14sp"
                 android:padding="8dp"
                 android:background="?attr/selectableItemBackground"
@@ -135,8 +264,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/no_events"
-                android:textColor="@color/text_secondary"
-                android:textSize="16sp"
+                android:textColor="@color/text_primary"
+                android:textSize="17sp"
+                android:textStyle="bold"
                 android:layout_marginTop="12dp" />
 
             <TextView
@@ -157,7 +287,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:paddingHorizontal="12dp"
+            android:paddingHorizontal="16dp"
             android:paddingBottom="8dp"
             android:clipToPadding="false" />
 
@@ -166,7 +296,8 @@
             android:id="@+id/bottomNavigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@drawable/bottom_nav_background"
+            android:elevation="8dp"
             app:itemIconTint="@drawable/nav_item_color"
             app:itemTextColor="@drawable/nav_item_color"
             app:menu="@menu/bottom_navigation"
@@ -174,18 +305,18 @@
 
     </LinearLayout>
 
-    <!-- Add Event FAB (Only visible to Officers) -->
+    <!-- Add Event FAB -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddEvent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="72dp"
+        android:layout_marginBottom="76dp"
         android:src="@android:drawable/ic_input_add"
         android:visibility="gone"
-        app:backgroundTint="@color/fbla_blue"
-        app:tint="@color/white"
+        app:backgroundTint="@color/fbla_gold"
+        app:tint="@color/navy"
         android:contentDescription="Add Event" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

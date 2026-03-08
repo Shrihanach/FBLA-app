@@ -5,33 +5,23 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_primary"
+    android:background="@color/white"
     tools:context=".HomeActivity">
-
-    <!-- Centered transparent FBLA logo background -->
-    <ImageView
-        android:layout_width="280dp"
-        android:layout_height="280dp"
-        android:layout_gravity="center"
-        android:src="@drawable/fbla_logo"
-        android:alpha="0.08"
-        android:scaleType="fitCenter"
-        android:contentDescription="FBLA Logo Background"
-        android:importantForAccessibility="no" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- Header -->
+        <!-- Header with curved bottom -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="@color/fbla_blue"
+            android:background="@drawable/header_curved_background"
             android:paddingHorizontal="20dp"
-            android:paddingVertical="16dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="24dp"
             android:gravity="center_vertical">
 
             <LinearLayout
@@ -61,59 +51,82 @@
 
         </LinearLayout>
 
-        <!-- Empty State -->
-        <LinearLayout
-            android:id="@+id/layoutEmpty"
+        <!-- Section Label -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Latest Announcements"
+            android:textColor="@color/navy"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp" />
+
+        <!-- Content Area -->
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:visibility="gone"
-            android:padding="32dp">
+            android:layout_weight="1">
 
-            <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@android:drawable/ic_dialog_info"
-                android:alpha="0.3"
-                android:contentDescription="No announcements" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/no_announcements"
-                android:textColor="@color/text_secondary"
-                android:textSize="18sp"
-                android:layout_marginTop="16dp" />
-
-            <TextView
-                android:id="@+id/textEmptyHint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Officers can post announcements"
-                android:textColor="@color/text_secondary"
-                android:textSize="14sp"
+            <!-- Empty State -->
+            <LinearLayout
+                android:id="@+id/layoutEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
                 android:gravity="center"
-                android:layout_marginTop="8dp" />
+                android:visibility="gone"
+                android:padding="32dp">
 
-        </LinearLayout>
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@android:drawable/ic_dialog_info"
+                    android:alpha="0.3"
+                    android:contentDescription="No announcements" />
 
-        <!-- Announcements List -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerAnnouncements"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:padding="12dp"
-            android:clipToPadding="false" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_announcements"
+                    android:textColor="@color/text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="14dp" />
+
+                <TextView
+                    android:id="@+id/textEmptyHint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Officers can post announcements"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:layout_marginTop="6dp" />
+
+            </LinearLayout>
+
+            <!-- Announcements RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerAnnouncements"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="14dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="8dp"
+                android:clipToPadding="false"
+                android:overScrollMode="never" />
+
+        </FrameLayout>
 
         <!-- Bottom Navigation -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@drawable/bottom_nav_frosted"
+            android:elevation="8dp"
             app:itemIconTint="@drawable/nav_item_color"
             app:itemTextColor="@drawable/nav_item_color"
             app:menu="@menu/bottom_navigation"
@@ -121,18 +134,18 @@
 
     </LinearLayout>
 
-    <!-- Add Announcement FAB (Only visible to Officers) -->
+    <!-- Add Announcement FAB -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddAnnouncement"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="72dp"
+        android:layout_marginBottom="76dp"
         android:src="@android:drawable/ic_input_add"
         android:visibility="gone"
-        app:backgroundTint="@color/fbla_blue"
-        app:tint="@color/white"
+        app:backgroundTint="@color/fbla_gold"
+        app:tint="@color/navy"
         android:contentDescription="Add Announcement" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

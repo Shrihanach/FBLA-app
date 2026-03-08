@@ -5,18 +5,39 @@
     
     <!-- FBLA Brand Colors -->
     <color name="fbla_blue">#003366</color>
-    <color name="fbla_blue_light">#1a4d80</color>
-    <color name="fbla_blue_dark">#00264d</color>
+    <color name="fbla_blue_light">#1A5276</color>
+    <color name="fbla_blue_dark">#001A33</color>
     <color name="fbla_gold">#C5A900</color>
-    <color name="fbla_gold_light">#e0c200</color>
+    <color name="fbla_gold_light">#E0C200</color>
+    
+    <!-- Extended Palette -->
+    <color name="navy">#0A1128</color>
+    <color name="navy_light">#1B2A4A</color>
+    <color name="cobalt">#0047AB</color>
+    <color name="cobalt_light">#1565C0</color>
+    <color name="cobalt_dark">#003380</color>
     
     <!-- UI Colors -->
-    <color name="background_primary">#F5F7FA</color>
+    <color name="background_primary">#F0F4F8</color>
+    <color name="background_warm">#E8EDF2</color>
     <color name="background_card">#FFFFFF</color>
-    <color name="text_primary">#1A1A2E</color>
-    <color name="text_secondary">#5C5C7A</color>
-    <color name="divider">#E0E0E0</color>
+    <color name="background_card_alt">#F5F8FB</color>
+    <color name="background_input">#F0F4F8</color>
+    <color name="text_primary">#0A1128</color>
+    <color name="text_secondary">#5A6A7A</color>
+    <color name="text_hint">#8899AA</color>
+    <color name="divider">#D5DDE5</color>
     <color name="success">#2E7D32</color>
     <color name="error">#C62828</color>
-    <color name="nav_unselected">#9E9E9E</color>
+    <color name="nav_unselected">#9AA5B4</color>
+    
+    <!-- Overlay/Gradient -->
+    <color name="overlay_dark">#CC0A1128</color>
+    <color name="overlay_light">#33003366</color>
+    <color name="gold_translucent">#33C5A900</color>
+    <color name="blue_translucent">#1A003366</color>
+    
+    <!-- Bottom Nav -->
+    <color name="nav_bg">#FFFFFF</color>
+    <color name="nav_indicator">#E8EDF2</color>
 </resources>

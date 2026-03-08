@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".ResourcesFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Header with curved bottom -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/header_curved_background"
+            android:paddingTop="20dp"
+            android:paddingBottom="24dp"
+            android:paddingHorizontal="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/resources"
+                        android:textColor="@color/white"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textRoleInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chapter Documents &amp; Materials"
+                        android:textColor="@color/fbla_gold"
+                        android:textSize="13sp"
+                        android:layout_marginTop="2dp" />
+
+                </LinearLayout>
+
+                <!-- Officer badge -->
+                <TextView
+                    android:id="@+id/badgeOfficer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:text="OFFICER"
+                    android:textColor="@color/navy"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/officer_badge_background"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Content Area (switches between category cards and resource list) -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <!-- ===== CATEGORY CARDS VIEW ===== -->
+            <ScrollView
+                android:id="@+id/layoutCategoryCards"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Section Label -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Browse by Category"
+                        android:textColor="@color/navy"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="14dp"
+                        android:paddingHorizontal="4dp" />
+
+                    <!-- Card 1: Objective Testing Resources -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardObjectiveTesting"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="14dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="3dp"
+                        app:cardBackgroundColor="@color/white"
+                        app:strokeColor="@color/divider"
+                        app:strokeWidth="1dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:padding="16dp"
+                            android:gravity="center_vertical">
+
+                            <!-- Image placeholder -->
+                            <ImageView
+                                android:id="@+id/imgObjectiveTesting"
+                                android:layout_width="72dp"
+                                android:layout_height="72dp"
+                                android:scaleType="centerCrop"
+                                android:background="@drawable/category_image_placeholder"
+                                android:contentDescription="Objective Testing"
+                                android:layout_marginEnd="16dp" />
+
+                            <!-- Text content -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Objective Testing Resources"
+                                    android:textColor="@color/navy"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/descObjectiveTesting"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Study guides, practice tests, and materials for objective test events."
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="13sp"
+                                    android:layout_marginTop="4dp"
+                                    android:lineSpacingMultiplier="1.2"
+                                    android:maxLines="3"
+                                    android:ellipsize="end" />
+
+                            </LinearLayout>
+
+                            <!-- Arrow indicator -->
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@android:drawable/ic_media_play"
+                                app:tint="@color/cobalt"
+                                android:contentDescription="Open"
+                                android:layout_marginStart="8dp" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Card 2: Presentation Event Resources -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardPresentationEvents"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="14dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="3dp"
+                        app:cardBackgroundColor="@color/white"
+                        app:strokeColor="@color/divider"
+                        app:strokeWidth="1dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:padding="16dp"
+                            android:gravity="center_vertical">
+
+                            <!-- Image placeholder -->
+                            <ImageView
+                                android:id="@+id/imgPresentationEvents"
+                                android:layout_width="72dp"
+                                android:layout_height="72dp"
+                                android:scaleType="centerCrop"
+                                android:background="@drawable/category_image_placeholder"
+                                android:contentDescription="Presentation Events"
+                                android:layout_marginEnd="16dp" />
+
+                            <!-- Text content -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Presentation Event Resources"
+                                    android:textColor="@color/navy"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/descPresentationEvents"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Presentation templates, rubrics, and tips for performance events."
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="13sp"
+                                    android:layout_marginTop="4dp"
+                                    android:lineSpacingMultiplier="1.2"
+                                    android:maxLines="3"
+                                    android:ellipsize="end" />
+
+                            </LinearLayout>
+
+                            <!-- Arrow indicator -->
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@android:drawable/ic_media_play"
+                                app:tint="@color/cobalt"
+                                android:contentDescription="Open"
+                                android:layout_marginStart="8dp" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Card 3: Business Achievement Awards -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardBAA"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="14dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="3dp"
+                        app:cardBackgroundColor="@color/white"
+                        app:strokeColor="@color/divider"
+                        app:strokeWidth="1dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:padding="16dp"
+                            android:gravity="center_vertical">
+
+                            <!-- Image placeholder -->
+                            <ImageView
+                                android:id="@+id/imgBAA"
+                                android:layout_width="72dp"
+                                android:layout_height="72dp"
+                                android:scaleType="centerCrop"
+                                android:background="@drawable/category_image_placeholder"
+                                android:contentDescription="Business Achievement Awards"
+                                android:layout_marginEnd="16dp" />
+
+                            <!-- Text content -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Business Achievement Awards"
+                                    android:textColor="@color/navy"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/descBAA"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Award guidelines, application forms, and achievement requirements."
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="13sp"
+                                    android:layout_marginTop="4dp"
+                                    android:lineSpacingMultiplier="1.2"
+                                    android:maxLines="3"
+                                    android:ellipsize="end" />
+
+                            </LinearLayout>
+
+                            <!-- Arrow indicator -->
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@android:drawable/ic_media_play"
+                                app:tint="@color/cobalt"
+                                android:contentDescription="Open"
+                                android:layout_marginStart="8dp" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+            </ScrollView>
+
+            <!-- ===== OBJECTIVE TESTING GRID VIEW (2-column grid of event tiles) ===== -->
+            <LinearLayout
+                android:id="@+id/layoutObjectiveGrid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!-- Back button + title -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="12dp"
+                    android:background="@color/white">
+
+                    <ImageButton
+                        android:id="@+id/btnBackGrid"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@android:drawable/ic_menu_revert"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Back to categories"
+                        app:tint="@color/navy" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Objective Testing Resources"
+                        android:textColor="@color/navy"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="8dp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider" />
+
+                <!-- 2-column grid of event tiles -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerEventTiles"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:padding="10dp"
+                    android:clipToPadding="false" />
+
+            </LinearLayout>
+
+            <!-- ===== RESOURCE LIST VIEW (shown after tapping a category) ===== -->
+            <LinearLayout
+                android:id="@+id/layoutResourceList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!-- Back button + category name -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="12dp"
+                    android:background="@color/white">
+
+                    <ImageButton
+                        android:id="@+id/btnBack"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@android:drawable/ic_menu_revert"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Back to categories"
+                        app:tint="@color/navy" />
+
+                    <TextView
+                        android:id="@+id/textCurrentCategory"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Category"
+                        android:textColor="@color/navy"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="8dp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider" />
+
+                <!-- Resources RecyclerView -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerResources"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="16dp"
+                        android:clipToPadding="false" />
+
+                    <!-- Loading Indicator -->
+                    <ProgressBar
+                        android:id="@+id/progressLoading"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:indeterminateTint="@color/cobalt"
+                        android:visibility="gone" />
+
+                    <!-- Empty State -->
+                    <LinearLayout
+                        android:id="@+id/layoutEmpty"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="32dp"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:src="@android:drawable/ic_menu_agenda"
+                            android:alpha="0.3"
+                            android:contentDescription="No Resources" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="No Resources Yet"
+                            android:textColor="@color/text_primary"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/textEmptyHint"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Resources uploaded by officers will appear here"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="14sp"
+                            android:textAlignment="center" />
+
+                    </LinearLayout>
+
+                    <!-- Error State -->
+                    <LinearLayout
+                        android:id="@+id/layoutError"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="32dp"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:src="@android:drawable/ic_dialog_alert"
+                            android:alpha="0.3"
+                            android:contentDescription="Error" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="Failed to Load Resources"
+                            android:textColor="@color/text_primary"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/textErrorMessage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Check your internet connection"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="14sp"
+                            android:textAlignment="center" />
+
+                        <Button
+                            android:id="@+id/btnRetry"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="Retry"
+                            android:textAllCaps="false"
+                            style="@style/FBLAButtonCobalt" />
+
+                    </LinearLayout>
+
+                </FrameLayout>
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <!-- FAB for Officer Upload -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabUpload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@android:drawable/ic_menu_upload"
+        android:contentDescription="Upload Resource"
+        app:backgroundTint="@color/fbla_gold"
+        app:tint="@color/navy"
+        android:visibility="gone" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

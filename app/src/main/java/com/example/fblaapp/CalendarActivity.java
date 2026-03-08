@@ -2,15 +2,18 @@ package com.example.fblaapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CalendarView;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,22 +29,28 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class CalendarActivity extends AppCompatActivity {
 
     private RecyclerView rvEvents;
+    private RecyclerView recyclerCalendar;
     private FloatingActionButton fabAddEvent;
     private LinearLayout layoutEmpty;
     private TextView textRoleInfo;
     private TextView textEmptyHint;
-    private CalendarView calendarView;
     private TextView textSelectedDate;
     private TextView textEventsHeader;
     private TextView textShowAll;
+    private TextView textMonthYear;
+    private ImageButton btnPrevMonth;
+    private ImageButton btnNextMonth;
 
     private EventsAdapter adapter;
+    private CalendarDayAdapter calendarDayAdapter;
     private AuthRepository authRepository;
     private EventRepository eventRepository;
     private boolean isOfficer = false;
@@ -49,15 +58,20 @@ public class CalendarActivity extends AppCompatActivity {
     private List<EventEntity> allEvents = new ArrayList<>();
     private Long selectedDateMillis = null;
 
+    // Calendar state
+    private Calendar displayedMonth; // The month currently shown in the calendar
+    private Set<String> eventDayKeys = new HashSet<>(); // Set of "yyyyMMdd" strings that have events
+
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.US);
     private final SimpleDateFormat dayFormat = new SimpleDateFormat("yyyyMMdd", Locale.US);
+    private final SimpleDateFormat monthYearFormat = new SimpleDateFormat("MMMM yyyy", Locale.US);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
 
-        // Initialize repositories using getInstance()
+        // Initialize repositories
         authRepository = AuthRepository.getInstance(this);
         eventRepository = EventRepository.getInstance(this);
 
@@ -71,7 +85,7 @@ public class CalendarActivity extends AppCompatActivity {
         UserEntity currentUser = authRepository.getCurrentUser();
         if (currentUser != null) {
             isOfficer = currentUser.isOfficer();
-            
+
             if (isOfficer) {
                 fabAddEvent.setVisibility(View.VISIBLE);
                 textRoleInfo.setText("Officer - You can manage events");
@@ -81,11 +95,11 @@ public class CalendarActivity extends AppCompatActivity {
             }
         }
 
-        // Setup RecyclerView
+        // Setup RecyclerView for events
         setupRecyclerView();
 
-        // Setup Calendar
-        setupCalendar();
+        // Setup custom calendar
+        setupCustomCalendar();
 
         // Setup FAB
         fabAddEvent.setOnClickListener(v -> {
@@ -99,6 +113,7 @@ public class CalendarActivity extends AppCompatActivity {
             textSelectedDate.setText("All Events");
             textEventsHeader.setText("Upcoming Events");
             textShowAll.setVisibility(View.GONE);
+            calendarDayAdapter.setSelectedDay(-1);
             filterEvents();
         });
 
@@ -111,14 +126,17 @@ public class CalendarActivity extends AppCompatActivity {
 
     private void initViews() {
         rvEvents = findViewById(R.id.rvEvents);
+        recyclerCalendar = findViewById(R.id.recyclerCalendar);
         fabAddEvent = findViewById(R.id.fabAddEvent);
         layoutEmpty = findViewById(R.id.layoutEmpty);
         textRoleInfo = findViewById(R.id.textRoleInfo);
         textEmptyHint = findViewById(R.id.textEmptyHint);
-        calendarView = findViewById(R.id.calendarView);
         textSelectedDate = findViewById(R.id.textSelectedDate);
         textEventsHeader = findViewById(R.id.textEventsHeader);
         textShowAll = findViewById(R.id.textShowAll);
+        textMonthYear = findViewById(R.id.textMonthYear);
+        btnPrevMonth = findViewById(R.id.btnPrevMonth);
+        btnNextMonth = findViewById(R.id.btnNextMonth);
     }
 
     private void checkLoginStatus() {
@@ -130,22 +148,81 @@ public class CalendarActivity extends AppCompatActivity {
         }
     }
 
-    private void setupCalendar() {
-        calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(year, month, dayOfMonth, 0, 0, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
-            
-            selectedDateMillis = calendar.getTimeInMillis();
-            
-            String formattedDate = dateFormat.format(calendar.getTime());
-            textSelectedDate.setText(formattedDate);
-            textEventsHeader.setText("Events on " + formattedDate);
-            textShowAll.setVisibility(View.VISIBLE);
-            
-            filterEvents();
+    // ==================== Custom Calendar ====================
+
+    private void setupCustomCalendar() {
+        displayedMonth = Calendar.getInstance();
+        displayedMonth.set(Calendar.DAY_OF_MONTH, 1);
+
+        calendarDayAdapter = new CalendarDayAdapter();
+        recyclerCalendar.setLayoutManager(new GridLayoutManager(this, 7));
+        recyclerCalendar.setAdapter(calendarDayAdapter);
+
+        // Month navigation
+        btnPrevMonth.setOnClickListener(v -> {
+            displayedMonth.add(Calendar.MONTH, -1);
+            updateCalendarGrid();
         });
+
+        btnNextMonth.setOnClickListener(v -> {
+            displayedMonth.add(Calendar.MONTH, 1);
+            updateCalendarGrid();
+        });
+
+        updateCalendarGrid();
     }
+
+    private void updateCalendarGrid() {
+        // Update header
+        textMonthYear.setText(monthYearFormat.format(displayedMonth.getTime()));
+
+        // Build the list of day cells for this month
+        List<DayCell> days = buildDayCells();
+        calendarDayAdapter.setDays(days);
+    }
+
+    private List<DayCell> buildDayCells() {
+        List<DayCell> cells = new ArrayList<>();
+
+        Calendar cal = (Calendar) displayedMonth.clone();
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+
+        int firstDayOfWeek = cal.get(Calendar.DAY_OF_WEEK); // 1=Sun, 7=Sat
+        int daysInMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        // Today for comparison
+        Calendar today = Calendar.getInstance();
+        String todayKey = dayFormat.format(today.getTime());
+
+        // Blank cells before the 1st
+        int blanks = firstDayOfWeek - 1; // Sunday=1, so 0 blanks if month starts on Sunday
+        for (int i = 0; i < blanks; i++) {
+            cells.add(new DayCell(0, false, false, false)); // empty cell
+        }
+
+        // Day cells
+        for (int day = 1; day <= daysInMonth; day++) {
+            cal.set(Calendar.DAY_OF_MONTH, day);
+            String dayKey = dayFormat.format(cal.getTime());
+
+            boolean isToday = dayKey.equals(todayKey);
+            boolean hasEvent = eventDayKeys.contains(dayKey);
+
+            cells.add(new DayCell(day, true, isToday, hasEvent));
+        }
+
+        return cells;
+    }
+
+    private void buildEventDayKeys() {
+        eventDayKeys.clear();
+        for (EventEntity event : allEvents) {
+            String key = dayFormat.format(new Date(event.getStartTimeMillis()));
+            eventDayKeys.add(key);
+        }
+    }
+
+    // ==================== Events ====================
 
     private void setupRecyclerView() {
         adapter = new EventsAdapter();
@@ -153,7 +230,6 @@ public class CalendarActivity extends AppCompatActivity {
         adapter.setOnEventClickListener(new EventsAdapter.OnEventClickListener() {
             @Override
             public void onEventClick(EventEntity event) {
-                // Open detail view
                 Intent intent = new Intent(CalendarActivity.this, EventDetailActivity.class);
                 intent.putExtra("event_id", event.getId());
                 intent.putExtra("event_title", event.getTitle());
@@ -167,7 +243,6 @@ public class CalendarActivity extends AppCompatActivity {
 
             @Override
             public void onEditClick(EventEntity event) {
-                // Open edit activity
                 Intent intent = new Intent(CalendarActivity.this, AddEditEventActivity.class);
                 intent.putExtra("event_id", event.getId());
                 intent.putExtra("event_title", event.getTitle());
@@ -202,15 +277,15 @@ public class CalendarActivity extends AppCompatActivity {
         AppExecutors.diskIO().execute(() -> {
             try {
                 eventRepository.deleteEvent(event);
-                runOnUiThread(() -> 
+                runOnUiThread(() ->
                     Toast.makeText(CalendarActivity.this, R.string.event_deleted, Toast.LENGTH_SHORT).show()
                 );
             } catch (SecurityException e) {
-                runOnUiThread(() -> 
+                runOnUiThread(() ->
                     Toast.makeText(CalendarActivity.this, R.string.only_officers_can_modify, Toast.LENGTH_SHORT).show()
                 );
             } catch (Exception e) {
-                runOnUiThread(() -> 
+                runOnUiThread(() ->
                     Toast.makeText(CalendarActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show()
                 );
             }
@@ -218,12 +293,11 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
     private void observeEvents() {
-        eventRepository.getAllEventsOrderedByStart().observe(this, new Observer<List<EventEntity>>() {
-            @Override
-            public void onChanged(List<EventEntity> events) {
-                allEvents = events != null ? events : new ArrayList<>();
-                filterEvents();
-            }
+        eventRepository.getAllEventsOrderedByStart().observe(this, events -> {
+            allEvents = events != null ? events : new ArrayList<>();
+            buildEventDayKeys();
+            updateCalendarGrid(); // Refresh dots
+            filterEvents();
         });
     }
 
@@ -238,7 +312,6 @@ public class CalendarActivity extends AppCompatActivity {
             String selectedDayStr = dayFormat.format(selectedDay.getTime());
 
             for (EventEntity event : allEvents) {
-                // Check if event starts on selected day
                 String eventDayStr = dayFormat.format(new Date(event.getStartTimeMillis()));
                 if (eventDayStr.equals(selectedDayStr)) {
                     filteredEvents.add(event);
@@ -248,7 +321,7 @@ public class CalendarActivity extends AppCompatActivity {
             // Show all upcoming events (from today onwards)
             filteredEvents = new ArrayList<>();
             long now = System.currentTimeMillis();
-            
+
             for (EventEntity event : allEvents) {
                 if (event.getEndTimeMillis() >= now) {
                     filteredEvents.add(event);
@@ -264,7 +337,7 @@ public class CalendarActivity extends AppCompatActivity {
         if (events == null || events.isEmpty()) {
             layoutEmpty.setVisibility(View.VISIBLE);
             rvEvents.setVisibility(View.GONE);
-            
+
             if (selectedDateMillis != null) {
                 textEmptyHint.setText("No events on this date");
             } else if (isOfficer) {
@@ -278,13 +351,15 @@ public class CalendarActivity extends AppCompatActivity {
         }
     }
 
+    // ==================== Bottom Navigation ====================
+
     private void setupBottomNavigation() {
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
         bottomNav.setSelectedItemId(R.id.nav_calendar);
-        
+
         bottomNav.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
-            
+
             if (itemId == R.id.nav_home) {
                 startActivity(new Intent(this, HomeActivity.class));
                 overridePendingTransition(0, 0);
@@ -317,5 +392,123 @@ public class CalendarActivity extends AppCompatActivity {
         super.onResume();
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
         bottomNav.setSelectedItemId(R.id.nav_calendar);
+    }
+
+    // ==================== Day Cell Model ====================
+
+    private static class DayCell {
+        final int day;          // 0 = blank cell
+        final boolean isValid;  // true if it's a real day
+        final boolean isToday;
+        final boolean hasEvent;
+
+        DayCell(int day, boolean isValid, boolean isToday, boolean hasEvent) {
+            this.day = day;
+            this.isValid = isValid;
+            this.isToday = isToday;
+            this.hasEvent = hasEvent;
+        }
+    }
+
+    // ==================== Calendar Day Adapter ====================
+
+    private class CalendarDayAdapter extends RecyclerView.Adapter<CalendarDayAdapter.DayViewHolder> {
+
+        private List<DayCell> days = new ArrayList<>();
+        private int selectedDayNumber = -1; // -1 = no selection
+
+        void setDays(List<DayCell> days) {
+            this.days = days;
+            notifyDataSetChanged();
+        }
+
+        void setSelectedDay(int dayNumber) {
+            this.selectedDayNumber = dayNumber;
+            notifyDataSetChanged();
+        }
+
+        @NonNull
+        @Override
+        public DayViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_calendar_day, parent, false);
+            return new DayViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull DayViewHolder holder, int position) {
+            DayCell cell = days.get(position);
+
+            if (!cell.isValid) {
+                // Blank cell
+                holder.textDay.setText("");
+                holder.textDay.setBackground(null);
+                holder.dotIndicator.setVisibility(View.INVISIBLE);
+                holder.itemView.setOnClickListener(null);
+                holder.itemView.setClickable(false);
+                return;
+            }
+
+            holder.textDay.setText(String.valueOf(cell.day));
+            holder.itemView.setClickable(true);
+
+            // Determine background and text color
+            boolean isSelected = (cell.day == selectedDayNumber);
+
+            if (isSelected) {
+                holder.textDay.setBackgroundResource(R.drawable.selected_day_background);
+                holder.textDay.setTextColor(getResources().getColor(R.color.white, null));
+            } else if (cell.isToday) {
+                holder.textDay.setBackgroundResource(R.drawable.today_day_background);
+                holder.textDay.setTextColor(getResources().getColor(R.color.cobalt, null));
+            } else {
+                holder.textDay.setBackground(null);
+                holder.textDay.setTextColor(getResources().getColor(R.color.text_primary, null));
+            }
+
+            // Event dot
+            if (cell.hasEvent) {
+                holder.dotIndicator.setVisibility(View.VISIBLE);
+            } else {
+                holder.dotIndicator.setVisibility(View.INVISIBLE);
+            }
+
+            // Click to select a day
+            holder.itemView.setOnClickListener(v -> {
+                Calendar cal = (Calendar) displayedMonth.clone();
+                cal.set(Calendar.DAY_OF_MONTH, cell.day);
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MILLISECOND, 0);
+
+                selectedDateMillis = cal.getTimeInMillis();
+                selectedDayNumber = cell.day;
+
+                String formattedDate = dateFormat.format(cal.getTime());
+                textSelectedDate.setText(formattedDate);
+                textEventsHeader.setText("Events on " + formattedDate);
+                textShowAll.setVisibility(View.VISIBLE);
+
+                notifyDataSetChanged();
+                filterEvents();
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return days.size();
+        }
+
+        class DayViewHolder extends RecyclerView.ViewHolder {
+            TextView textDay;
+            View dotIndicator;
+
+            DayViewHolder(View itemView) {
+                super(itemView);
+                textDay = itemView.findViewById(R.id.textDay);
+                dotIndicator = itemView.findViewById(R.id.dotIndicator);
+            }
+        }
     }
 }

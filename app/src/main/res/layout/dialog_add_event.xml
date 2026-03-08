@@ -5,17 +5,23 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="24dp"
-    android:background="@color/white">
+    android:background="@drawable/rounded_card_background">
 
     <TextView
         android:id="@+id/dialogTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Add New Event"
-        android:textColor="@color/fbla_blue"
+        android:textColor="@color/navy"
         android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp" />
+        android:textStyle="bold" />
+
+    <!-- Gold accent line -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="3dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/gold_accent_line" />
 
     <TextView
         android:id="@+id/textSelectedDate"
@@ -24,6 +30,7 @@
         android:text="February 4, 2026"
         android:textColor="@color/text_secondary"
         android:textSize="14sp"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="20dp" />
 
     <!-- Event Title -->
@@ -31,8 +38,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Event Title"
-        app:boxStrokeColor="@color/fbla_blue"
-        app:hintTextColor="@color/fbla_blue"
+        app:boxCornerRadiusTopStart="14dp"
+        app:boxCornerRadiusTopEnd="14dp"
+        app:boxCornerRadiusBottomStart="14dp"
+        app:boxCornerRadiusBottomEnd="14dp"
+        app:boxStrokeColor="@color/cobalt"
+        app:hintTextColor="@color/cobalt"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_marginBottom="16dp">
 
@@ -50,8 +61,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Date (YYYY-MM-DD)"
-        app:boxStrokeColor="@color/fbla_blue"
-        app:hintTextColor="@color/fbla_blue"
+        app:boxCornerRadiusTopStart="14dp"
+        app:boxCornerRadiusTopEnd="14dp"
+        app:boxCornerRadiusBottomStart="14dp"
+        app:boxCornerRadiusBottomEnd="14dp"
+        app:boxStrokeColor="@color/cobalt"
+        app:hintTextColor="@color/cobalt"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_marginBottom="16dp">
 
@@ -69,8 +84,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Time (optional, e.g. 9:30am)"
-        app:boxStrokeColor="@color/fbla_blue"
-        app:hintTextColor="@color/fbla_blue"
+        app:boxCornerRadiusTopStart="14dp"
+        app:boxCornerRadiusTopEnd="14dp"
+        app:boxCornerRadiusBottomStart="14dp"
+        app:boxCornerRadiusBottomEnd="14dp"
+        app:boxStrokeColor="@color/cobalt"
+        app:hintTextColor="@color/cobalt"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_marginBottom="20dp">
 
@@ -158,6 +177,7 @@
             android:layout_height="wrap_content"
             android:text="Cancel"
             android:textColor="@color/text_secondary"
+            android:textAllCaps="false"
             style="@style/Widget.Material3.Button.TextButton" />
 
         <Button
@@ -165,8 +185,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Save Event"
-            android:backgroundTint="@color/fbla_blue"
-            style="@style/Widget.Material3.Button" />
+            android:textAllCaps="false"
+            style="@style/FBLAButton" />
 
     </LinearLayout>
 

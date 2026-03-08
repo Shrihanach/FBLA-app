@@ -1,51 +1,88 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme inheriting from Material3 (which is AppCompat compatible) -->
+    <!-- Base application theme -->
     <style name="Base.Theme.FBLAApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/fbla_blue</item>
-        <item name="colorPrimaryDark">@color/fbla_blue_dark</item>
+        <item name="colorPrimary">@color/cobalt</item>
+        <item name="colorPrimaryDark">@color/navy</item>
         <item name="colorAccent">@color/fbla_gold</item>
         <item name="colorSecondary">@color/fbla_gold</item>
-        <item name="android:statusBarColor">@color/fbla_blue_dark</item>
-        <item name="android:navigationBarColor">@color/white</item>
+        <item name="colorSurface">@color/background_card</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="android:statusBarColor">@color/navy</item>
+        <item name="android:navigationBarColor">@color/nav_bg</item>
         <item name="android:windowBackground">@color/background_primary</item>
+        <item name="shapeAppearanceSmallComponent">@style/RoundedShape.Small</item>
+        <item name="shapeAppearanceMediumComponent">@style/RoundedShape.Medium</item>
+        <item name="shapeAppearanceLargeComponent">@style/RoundedShape.Large</item>
     </style>
 
     <style name="Theme.FBLAApp" parent="Base.Theme.FBLAApp" />
     
-    <!-- Main app theme with action bar -->
     <style name="Theme.FBLAApp.Light" parent="Theme.Material3.Light.NoActionBar">
-        <item name="colorPrimary">@color/fbla_blue</item>
-        <item name="colorPrimaryDark">@color/fbla_blue_dark</item>
+        <item name="colorPrimary">@color/cobalt</item>
+        <item name="colorPrimaryDark">@color/navy</item>
         <item name="colorAccent">@color/fbla_gold</item>
-        <item name="android:statusBarColor">@color/fbla_blue_dark</item>
+        <item name="android:statusBarColor">@color/navy</item>
     </style>
     
-    <!-- No action bar variant -->
     <style name="Theme.FBLAApp.NoActionBar" parent="Theme.Material3.Light.NoActionBar">
-        <item name="colorPrimary">@color/fbla_blue</item>
-        <item name="colorPrimaryDark">@color/fbla_blue_dark</item>
+        <item name="colorPrimary">@color/cobalt</item>
+        <item name="colorPrimaryDark">@color/navy</item>
         <item name="colorAccent">@color/fbla_gold</item>
-        <item name="android:statusBarColor">@color/fbla_blue_dark</item>
+        <item name="android:statusBarColor">@color/navy</item>
+    </style>
+    
+    <!-- Rounded Shapes -->
+    <style name="RoundedShape.Small" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerSize">12dp</item>
+    </style>
+    
+    <style name="RoundedShape.Medium" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerSize">16dp</item>
+    </style>
+    
+    <style name="RoundedShape.Large" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerSize">24dp</item>
     </style>
     
     <!-- Card Style -->
     <style name="CardStyle">
-        <item name="cardCornerRadius">12dp</item>
-        <item name="cardElevation">4dp</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">2dp</item>
         <item name="cardBackgroundColor">@color/background_card</item>
     </style>
     
-    <!-- Button Style -->
+    <!-- Primary Button - Navy pill shape -->
     <style name="FBLAButton" parent="Widget.Material3.Button">
-        <item name="android:backgroundTint">@color/fbla_blue</item>
+        <item name="android:backgroundTint">@color/navy</item>
         <item name="android:textColor">@color/white</item>
-        <item name="cornerRadius">8dp</item>
+        <item name="cornerRadius">24dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:letterSpacing">0.02</item>
     </style>
     
+    <!-- Gold accent button -->
     <style name="FBLAButtonGold" parent="Widget.Material3.Button">
         <item name="android:backgroundTint">@color/fbla_gold</item>
-        <item name="android:textColor">@color/fbla_blue_dark</item>
-        <item name="cornerRadius">8dp</item>
+        <item name="android:textColor">@color/navy</item>
+        <item name="cornerRadius">24dp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+    
+    <!-- Cobalt button variant -->
+    <style name="FBLAButtonCobalt" parent="Widget.Material3.Button">
+        <item name="android:backgroundTint">@color/cobalt</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="cornerRadius">24dp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+    
+    <!-- Outlined button -->
+    <style name="FBLAButtonOutlined" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="strokeColor">@color/cobalt</item>
+        <item name="android:textColor">@color/cobalt</item>
+        <item name="cornerRadius">24dp</item>
+        <item name="android:textAllCaps">false</item>
     </style>
     
     <!-- Calendar Styles -->
@@ -57,5 +94,15 @@
     <style name="CalendarWeekDayStyle" parent="android:TextAppearance.Small">
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/text_secondary</item>
+    </style>
+    
+    <!-- Text Input style -->
+    <style name="FBLATextInput" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopStart">14dp</item>
+        <item name="boxCornerRadiusTopEnd">14dp</item>
+        <item name="boxCornerRadiusBottomStart">14dp</item>
+        <item name="boxCornerRadiusBottomEnd">14dp</item>
+        <item name="boxStrokeColor">@color/cobalt</item>
+        <item name="hintTextColor">@color/cobalt</item>
     </style>
 </resources>

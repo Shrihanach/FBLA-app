@@ -49,9 +49,10 @@ dependencies {
     // CircleImageView for profile pictures
     implementation("de.hdodenhof:circleimageview:3.1.0")
     
-    // Firebase dependencies (commented out - uncomment if needed)
-    // implementation(libs.firebase.auth)
-    // implementation(libs.firebase.inappmessaging)
+    // Firebase BOM manages all Firebase library versions for compatibility
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
     
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

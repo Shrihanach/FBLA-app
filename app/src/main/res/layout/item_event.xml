@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    app:cardCornerRadius="12dp"
+    android:layout_marginBottom="10dp"
+    app:cardCornerRadius="16dp"
     app:cardElevation="2dp"
     app:cardBackgroundColor="@color/background_card"
     android:foreground="?attr/selectableItemBackground"
@@ -23,8 +23,8 @@
             android:id="@+id/viewColorIndicator"
             android:layout_width="4dp"
             android:layout_height="match_parent"
-            android:minHeight="60dp"
-            android:background="@color/fbla_blue" />
+            android:minHeight="56dp"
+            android:background="@color/cobalt" />
 
         <!-- Event Info -->
         <LinearLayout
@@ -32,14 +32,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:layout_marginStart="12dp">
+            android:layout_marginStart="14dp">
 
             <TextView
                 android:id="@+id/tvTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Event Title"
-                android:textColor="@color/text_primary"
+                android:textColor="@color/navy"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:maxLines="2"
@@ -56,7 +56,7 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:src="@android:drawable/ic_menu_recent_history"
-                    app:tint="@color/text_secondary"
+                    app:tint="@color/text_hint"
                     android:contentDescription="Time" />
 
                 <TextView
@@ -83,7 +83,7 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:src="@android:drawable/ic_menu_mylocation"
-                    app:tint="@color/text_secondary"
+                    app:tint="@color/text_hint"
                     android:contentDescription="Location" />
 
                 <TextView
@@ -116,7 +116,7 @@
                 android:src="@android:drawable/ic_menu_edit"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Edit Event"
-                app:tint="@color/fbla_blue" />
+                app:tint="@color/cobalt" />
 
             <ImageButton
                 android:id="@+id/btnDelete"

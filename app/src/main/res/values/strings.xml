@@ -53,6 +53,10 @@
     <string name="open_link">Open</string>
     <string name="bookmarks">My Bookmarks</string>
     <string name="all_resources">All Resources</string>
+    <string name="empty_hint_officer">Tap the + button to upload the first resource</string>
+    <string name="empty_hint_member">Resources uploaded by officers will appear here</string>
+    <string name="uploading_progress">Uploading… %1$d%%</string>
+    <string name="getting_download_url">Getting download URL…</string>
     
     <!-- Social Screen -->
     <string name="social_connect">Connect With Us</string>

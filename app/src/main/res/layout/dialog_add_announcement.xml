@@ -4,24 +4,36 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:padding="24dp"
+    android:background="@drawable/rounded_card_background">
 
     <TextView
         android:id="@+id/dialogTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Post Announcement"
-        android:textColor="@color/fbla_blue"
+        android:textColor="@color/navy"
         android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="20dp" />
+        android:textStyle="bold" />
+
+    <!-- Gold accent line -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="3dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/gold_accent_line" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Title"
-        app:boxStrokeColor="@color/fbla_blue"
-        app:hintTextColor="@color/fbla_blue"
+        app:boxCornerRadiusTopStart="14dp"
+        app:boxCornerRadiusTopEnd="14dp"
+        app:boxCornerRadiusBottomStart="14dp"
+        app:boxCornerRadiusBottomEnd="14dp"
+        app:boxStrokeColor="@color/cobalt"
+        app:hintTextColor="@color/cobalt"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_marginBottom="16dp">
 
@@ -39,8 +51,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Content"
-        app:boxStrokeColor="@color/fbla_blue"
-        app:hintTextColor="@color/fbla_blue"
+        app:boxCornerRadiusTopStart="14dp"
+        app:boxCornerRadiusTopEnd="14dp"
+        app:boxCornerRadiusBottomStart="14dp"
+        app:boxCornerRadiusBottomEnd="14dp"
+        app:boxStrokeColor="@color/cobalt"
+        app:hintTextColor="@color/cobalt"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -67,6 +83,7 @@
             android:layout_height="wrap_content"
             android:text="@string/cancel"
             android:textColor="@color/text_secondary"
+            android:textAllCaps="false"
             style="@style/Widget.Material3.Button.TextButton" />
 
         <Button
@@ -74,9 +91,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Post"
-            android:backgroundTint="@color/fbla_blue"
+            android:textAllCaps="false"
             android:layout_marginStart="8dp"
-            style="@style/Widget.Material3.Button" />
+            style="@style/FBLAButton" />
 
     </LinearLayout>
 

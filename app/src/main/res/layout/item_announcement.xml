@@ -1,64 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp"
-    app:cardBackgroundColor="@color/background_card">
+    android:layout_marginBottom="12dp">
 
+    <!-- Frosted glass announcement card -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:background="@drawable/card_frosted_navy"
+        android:padding="20dp">
 
-        <!-- Header with title and action buttons -->
+        <!-- ===== TOP ROW: Gold bar + Title + Action Buttons ===== -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
+            <!-- Vertical gold accent bar -->
+            <View
+                android:layout_width="4dp"
+                android:layout_height="28dp"
+                android:background="@color/fbla_gold"
+                android:layout_marginEnd="12dp" />
+
             <TextView
                 android:id="@+id/textTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textColor="@color/fbla_blue"
+                android:textColor="@color/white"
                 android:textSize="17sp"
                 android:textStyle="bold"
                 android:text="Announcement Title" />
 
             <ImageButton
                 android:id="@+id/btnEdit"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
                 android:src="@android:drawable/ic_menu_edit"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Edit Announcement"
                 android:visibility="gone"
-                app:tint="@color/fbla_blue" />
+                app:tint="@color/fbla_gold" />
 
             <ImageButton
                 android:id="@+id/btnDelete"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
                 android:src="@android:drawable/ic_menu_delete"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Delete Announcement"
                 android:visibility="gone"
-                app:tint="@color/error" />
+                app:tint="#FF8A80" />
 
         </LinearLayout>
 
-        <!-- Author and Timestamp -->
+        <!-- ===== AUTHOR ROW ===== -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="16dp"
             android:gravity="center_vertical">
 
             <TextView
@@ -74,30 +81,37 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=" • "
-                android:textColor="@color/text_secondary"
+                android:textColor="#80FFFFFF"
                 android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/textTimestamp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_secondary"
+                android:textColor="#80FFFFFF"
                 android:textSize="12sp"
                 android:text="2 hours ago" />
 
         </LinearLayout>
 
-        <!-- Content -->
+        <!-- ===== GLASS DIVIDER (subtle white line) ===== -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#18FFFFFF"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="14dp" />
+
+        <!-- ===== CONTENT ===== -->
         <TextView
             android:id="@+id/textContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:textColor="@color/text_primary"
+            android:textColor="#DDFFFFFF"
             android:textSize="14sp"
-            android:lineSpacingMultiplier="1.4"
+            android:lineSpacingMultiplier="1.5"
             android:text="Announcement content goes here..." />
 
     </LinearLayout>
 
-</com.google.android.material.card.MaterialCardView>
+</FrameLayout>
