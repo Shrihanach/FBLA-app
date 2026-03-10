@@ -72,6 +72,21 @@ public class ResourcesFragment extends Fragment {
     private ImageButton btnBackGrid;
     private RecyclerView recyclerEventTiles;
 
+    // Views - Presentation events grid
+    private LinearLayout layoutPresentationGrid;
+    private ImageButton btnBackPresentationGrid;
+    private RecyclerView recyclerPresentationTiles;
+
+    // Views - Event detail (two-tab view inside each event)
+    private LinearLayout layoutEventDetail;
+    private ImageButton btnBackEventDetail;
+    private TextView textEventDetailName;
+    private com.google.android.material.button.MaterialButton tabEventOverview;
+    private com.google.android.material.button.MaterialButton tabStudyMaterials;
+    private ScrollView contentEventOverview;
+    private ScrollView contentStudyMaterials;
+    private com.google.android.material.button.MaterialButton btnOpenGuidelines;
+
     // Views - Resource list
     private LinearLayout layoutResourceList;
     private ImageButton btnBack;
@@ -92,8 +107,12 @@ public class ResourcesFragment extends Fragment {
     private AuthRepository authRepository;
     private ResourcesAdapter adapter;
     private EventTileAdapter eventTileAdapter;
+    private EventTileAdapter presentationTileAdapter;
     private final List<FirestoreResource> allResources = new ArrayList<>();
     private String currentCategory = null;
+    private String currentEventName = null;
+    private String currentEventGuidelineUrl = null;
+    private String previousGrid = null; // "objective" or "presentation" — to go back to the right grid
     private boolean isOfficer = false;
     private String currentUserName = "";
 
@@ -103,34 +122,181 @@ public class ResourcesFragment extends Fragment {
     private ActivityResultLauncher<Intent> filePickerLauncher;
     private Dialog currentUploadDialog;
 
-    // FBLA Objective Test Events
+    // FBLA 2026 Objective Test Events (31 events)
     private static final String[] OBJECTIVE_TEST_EVENTS = {
-            "Accounting I",
-            "Accounting II",
+            "Accounting",
+            "Advanced Accounting",
+            "Advertising",
             "Agribusiness",
-            "Business Calculations",
             "Business Communication",
             "Business Law",
             "Computer Problem Solving",
-            "Cyber Security",
-            "Database Design & Applications",
+            "Cybersecurity",
+            "Data Science & AI",
             "Economics",
-            "Health Care Administration",
+            "Healthcare Administration",
+            "Human Resource Management",
             "Insurance & Risk Management",
-            "Introduction to Business",
             "Introduction to Business Communication",
-            "Introduction to Financial Math",
+            "Introduction to Business Concepts",
+            "Introduction to Business Procedures",
+            "Introduction to FBLA",
             "Introduction to Information Technology",
+            "Introduction to Marketing Concepts",
             "Introduction to Parliamentary Procedure",
+            "Introduction to Retail & Merchandising",
+            "Introduction to Supply Chain Management",
             "Journalism",
-            "Marketing",
-            "Networking Infrastructure",
+            "Networking Infrastructures",
             "Organizational Leadership",
             "Personal Finance",
-            "Securities & Investments",
-            "Supply Chain Management",
-            "UX Design"
+            "Project Management",
+            "Public Administration & Management",
+            "Real Estate",
+            "Retail Management",
+            "Securities & Investments"
     };
+
+    // FBLA 2026 Presentation / Role Play / Performance Events (45 events)
+    private static final String[] PRESENTATION_EVENTS = {
+            // Collaborative Test & Role Play
+            "Banking & Financial Systems",
+            "Business Management",
+            "Entrepreneurship",
+            "Hospitality & Event Management",
+            "International Business",
+            "Management Information Systems",
+            "Marketing",
+            "Network Design",
+            "Sports & Entertainment Management",
+            "Parliamentary Procedure",
+            // Individual Test & Role Play
+            "Customer Service",
+            "Technology Support & Services",
+            // Objective Test + Presentation
+            "Business Ethics",
+            // Pre Judged & Presentation
+            "Future Business Educator",
+            "Future Business Leader",
+            "Job Interview",
+            "Digital Animation",
+            "Digital Video Production",
+            "Business Plan",
+            "Community Service Project",
+            "Local Chapter Annual Business Report",
+            // Presentation
+            "Broadcast Journalism",
+            "Career Portfolio",
+            "Data Analysis",
+            "Event Planning",
+            "Financial Planning",
+            "Financial Statement Analysis",
+            "Graphic Design",
+            "Introduction to Business",
+            "Introduction to Social Media Strategy",
+            "Public Service Announcement",
+            "Sales Presentation",
+            "Social Media Strategies",
+            "Supply Chain Management",
+            "Visual Design",
+            // Presentation / Demonstration
+            "Coding & Programming",
+            "Computer Game & Simulation Programming",
+            "Introduction to Programming",
+            "Mobile Application Development",
+            "Website Coding & Development",
+            "Website Design",
+            // Production Test
+            "Computer Applications",
+            // Speech
+            "Impromptu Speaking",
+            "Introduction to Public Speaking",
+            "Public Speaking"
+    };
+
+    // Guideline URLs for all events
+    private static final Map<String, String> EVENT_GUIDELINE_URLS = new HashMap<>();
+    static {
+        // ===== Objective Test Events =====
+        EVENT_GUIDELINE_URLS.put("Accounting", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Accounting.pdf");
+        EVENT_GUIDELINE_URLS.put("Advanced Accounting", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Advanced-Accounting.pdf");
+        EVENT_GUIDELINE_URLS.put("Advertising", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Advertising.pdf");
+        EVENT_GUIDELINE_URLS.put("Agribusiness", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Agribusiness.pdf");
+        EVENT_GUIDELINE_URLS.put("Business Communication", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Business-Communication.pdf");
+        EVENT_GUIDELINE_URLS.put("Business Law", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Business-Law.pdf");
+        EVENT_GUIDELINE_URLS.put("Computer Problem Solving", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Computer-Problem-Solving.pdf");
+        EVENT_GUIDELINE_URLS.put("Cybersecurity", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Cybersecurity.pdf");
+        EVENT_GUIDELINE_URLS.put("Data Science & AI", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Data-Science-and-AI.pdf");
+        EVENT_GUIDELINE_URLS.put("Economics", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Economics.pdf");
+        EVENT_GUIDELINE_URLS.put("Healthcare Administration", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Healthcare-Administration.pdf");
+        EVENT_GUIDELINE_URLS.put("Human Resource Management", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Human-Resource-Management.pdf");
+        EVENT_GUIDELINE_URLS.put("Insurance & Risk Management", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Insurance-and-Risk-Management.pdf");
+        EVENT_GUIDELINE_URLS.put("Introduction to Business Communication", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Introduction-to-Business-Communication.pdf");
+        EVENT_GUIDELINE_URLS.put("Introduction to Business Concepts", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Introduction-to-Business-Concepts.pdf");
+        EVENT_GUIDELINE_URLS.put("Introduction to Business Procedures", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Introduction-to-Business-Procedures.pdf");
+        EVENT_GUIDELINE_URLS.put("Introduction to FBLA", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Introduction-to-FBLA.pdf");
+        EVENT_GUIDELINE_URLS.put("Introduction to Information Technology", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Introduction-to-Information-Technology.pdf");
+        EVENT_GUIDELINE_URLS.put("Introduction to Marketing Concepts", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Introduction-to-Marketing-Concepts.pdf");
+        EVENT_GUIDELINE_URLS.put("Introduction to Parliamentary Procedure", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Introduction-to-Parliamentary-Procedure.pdf");
+        EVENT_GUIDELINE_URLS.put("Introduction to Retail & Merchandising", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Introduction-to-Retail-and-Merchandising.pdf");
+        EVENT_GUIDELINE_URLS.put("Introduction to Supply Chain Management", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Introduction-to-Supply-Chain-Management.pdf");
+        EVENT_GUIDELINE_URLS.put("Journalism", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Journalism.pdf");
+        EVENT_GUIDELINE_URLS.put("Networking Infrastructures", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Networking-Infrastructures.pdf");
+        EVENT_GUIDELINE_URLS.put("Organizational Leadership", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Organizational-Leadership.pdf");
+        EVENT_GUIDELINE_URLS.put("Personal Finance", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Personal-Finance.pdf");
+        EVENT_GUIDELINE_URLS.put("Project Management", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Project-Management.pdf");
+        EVENT_GUIDELINE_URLS.put("Public Administration & Management", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Public-Administration-and-Management.pdf");
+        EVENT_GUIDELINE_URLS.put("Real Estate", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Real-Estate.pdf");
+        EVENT_GUIDELINE_URLS.put("Retail Management", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Retail-Management.pdf");
+        EVENT_GUIDELINE_URLS.put("Securities & Investments", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Objective%20Tests/Securities-and-Investments.pdf");
+
+        // ===== Presentation / Role Play / Performance Events =====
+        EVENT_GUIDELINE_URLS.put("Banking & Financial Systems", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Role%20Play%20Events/Banking-and-Financial-Systems.pdf");
+        EVENT_GUIDELINE_URLS.put("Business Management", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Role%20Play%20Events/Business-Management.pdf");
+        EVENT_GUIDELINE_URLS.put("Entrepreneurship", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Role%20Play%20Events/Entrepreneurship.pdf");
+        EVENT_GUIDELINE_URLS.put("Hospitality & Event Management", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Role%20Play%20Events/Hospitality-and-Event-Management.pdf");
+        EVENT_GUIDELINE_URLS.put("International Business", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Role%20Play%20Events/International-Business.pdf");
+        EVENT_GUIDELINE_URLS.put("Management Information Systems", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Role%20Play%20Events/Management-Information-Systems.pdf");
+        EVENT_GUIDELINE_URLS.put("Marketing", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Role%20Play%20Events/Marketing.pdf");
+        EVENT_GUIDELINE_URLS.put("Network Design", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Role%20Play%20Events/Network-Design.pdf");
+        EVENT_GUIDELINE_URLS.put("Sports & Entertainment Management", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Role%20Play%20Events/Sports-and-Entertainment-Management.pdf");
+        EVENT_GUIDELINE_URLS.put("Parliamentary Procedure", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Role%20Play%20Events/Parliamentary-Procedure.pdf");
+        EVENT_GUIDELINE_URLS.put("Customer Service", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Role%20Play%20Events/Customer-Service.pdf");
+        EVENT_GUIDELINE_URLS.put("Technology Support & Services", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Role%20Play%20Events/Technology-Support-and-Services.pdf");
+        EVENT_GUIDELINE_URLS.put("Business Ethics", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Business-Ethics.pdf");
+        EVENT_GUIDELINE_URLS.put("Future Business Educator", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Future-Business-Educator.pdf");
+        EVENT_GUIDELINE_URLS.put("Future Business Leader", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Future-Business-Leader.pdf");
+        EVENT_GUIDELINE_URLS.put("Job Interview", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Job-Interview.pdf");
+        EVENT_GUIDELINE_URLS.put("Digital Animation", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Digital-Animation.pdf");
+        EVENT_GUIDELINE_URLS.put("Digital Video Production", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Digital-Video-Production.pdf");
+        EVENT_GUIDELINE_URLS.put("Business Plan", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Business-Plan.pdf");
+        EVENT_GUIDELINE_URLS.put("Community Service Project", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Chapter%20Events/Community-Service-Project.pdf");
+        EVENT_GUIDELINE_URLS.put("Local Chapter Annual Business Report", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Chapter%20Events/Local-Chapter-Annual-Business-Report.pdf");
+        EVENT_GUIDELINE_URLS.put("Broadcast Journalism", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Broadcast-Journalism.pdf");
+        EVENT_GUIDELINE_URLS.put("Career Portfolio", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Career-Portfolio.pdf");
+        EVENT_GUIDELINE_URLS.put("Data Analysis", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Data-Analysis.pdf");
+        EVENT_GUIDELINE_URLS.put("Event Planning", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Event-Planning.pdf");
+        EVENT_GUIDELINE_URLS.put("Financial Planning", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Financial-Planning.pdf");
+        EVENT_GUIDELINE_URLS.put("Financial Statement Analysis", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Financial-Statement-Analysis.pdf");
+        EVENT_GUIDELINE_URLS.put("Graphic Design", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Graphic-Design.pdf");
+        EVENT_GUIDELINE_URLS.put("Introduction to Business", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Introduction-to-Business-Presentation.pdf");
+        EVENT_GUIDELINE_URLS.put("Introduction to Social Media Strategy", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Introduction-to-Social-Media-Strategy.pdf");
+        EVENT_GUIDELINE_URLS.put("Public Service Announcement", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Public-Service-Announcement.pdf");
+        EVENT_GUIDELINE_URLS.put("Sales Presentation", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Sales-Presentation.pdf");
+        EVENT_GUIDELINE_URLS.put("Social Media Strategies", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Social-Media-Strategies.pdf");
+        EVENT_GUIDELINE_URLS.put("Supply Chain Management", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Supply-Chain-Management.pdf");
+        EVENT_GUIDELINE_URLS.put("Visual Design", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Visual-Design.pdf");
+        EVENT_GUIDELINE_URLS.put("Coding & Programming", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Coding-and-Programming.pdf");
+        EVENT_GUIDELINE_URLS.put("Computer Game & Simulation Programming", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Computer-Game-and-Simulation-Programming.pdf");
+        EVENT_GUIDELINE_URLS.put("Introduction to Programming", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Introduction-to-Programming.pdf");
+        EVENT_GUIDELINE_URLS.put("Mobile Application Development", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Mobile-Application-Development.pdf");
+        EVENT_GUIDELINE_URLS.put("Website Coding & Development", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Website-Coding-and-Development.pdf");
+        EVENT_GUIDELINE_URLS.put("Website Design", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Website-Design.pdf");
+        EVENT_GUIDELINE_URLS.put("Computer Applications", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Production%20Events/Computer-Applications.pdf");
+        EVENT_GUIDELINE_URLS.put("Impromptu Speaking", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Impromptu-Speaking.pdf");
+        EVENT_GUIDELINE_URLS.put("Introduction to Public Speaking", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Introduction-to-Public-Speaking.pdf");
+        EVENT_GUIDELINE_URLS.put("Public Speaking", "https://connect.fbla.org/headquarters/files/High%20School%20Competitive%20Events%20Resources/Individual%20Guidelines/Presentation%20Events/Public-Speaking.pdf");
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -176,6 +342,7 @@ public class ResourcesFragment extends Fragment {
         setupUserRole();
         setupRecyclerView();
         setupEventTileGrid();
+        setupPresentationTileGrid();
         setupCategoryCards();
         setupClickListeners();
     }
@@ -191,6 +358,21 @@ public class ResourcesFragment extends Fragment {
         layoutObjectiveGrid = view.findViewById(R.id.layoutObjectiveGrid);
         btnBackGrid = view.findViewById(R.id.btnBackGrid);
         recyclerEventTiles = view.findViewById(R.id.recyclerEventTiles);
+
+        // Presentation events grid
+        layoutPresentationGrid = view.findViewById(R.id.layoutPresentationGrid);
+        btnBackPresentationGrid = view.findViewById(R.id.btnBackPresentationGrid);
+        recyclerPresentationTiles = view.findViewById(R.id.recyclerPresentationTiles);
+
+        // Event detail view (two tabs)
+        layoutEventDetail = view.findViewById(R.id.layoutEventDetail);
+        btnBackEventDetail = view.findViewById(R.id.btnBackEventDetail);
+        textEventDetailName = view.findViewById(R.id.textEventDetailName);
+        tabEventOverview = view.findViewById(R.id.tabEventOverview);
+        tabStudyMaterials = view.findViewById(R.id.tabStudyMaterials);
+        contentEventOverview = view.findViewById(R.id.contentEventOverview);
+        contentStudyMaterials = view.findViewById(R.id.contentStudyMaterials);
+        btnOpenGuidelines = view.findViewById(R.id.btnOpenGuidelines);
 
         // Resource list view
         layoutResourceList = view.findViewById(R.id.layoutResourceList);
@@ -232,35 +414,51 @@ public class ResourcesFragment extends Fragment {
     }
 
     private void setupEventTileGrid() {
-        eventTileAdapter = new EventTileAdapter(OBJECTIVE_TEST_EVENTS);
+        eventTileAdapter = new EventTileAdapter(OBJECTIVE_TEST_EVENTS, EVENT_GUIDELINE_URLS, "objective");
         recyclerEventTiles.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recyclerEventTiles.setAdapter(eventTileAdapter);
+    }
+
+    private void setupPresentationTileGrid() {
+        presentationTileAdapter = new EventTileAdapter(PRESENTATION_EVENTS, EVENT_GUIDELINE_URLS, "presentation");
+        recyclerPresentationTiles.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        recyclerPresentationTiles.setAdapter(presentationTileAdapter);
     }
 
     private void setupCategoryCards() {
         // Objective Testing → show 2-column grid
         cardObjectiveTesting.setOnClickListener(v -> openObjectiveTestingGrid());
 
-        // Presentation Events → show Firestore resource list
-        cardPresentationEvents.setOnClickListener(v -> openCategory("Presentation Event Resources"));
+        // Presentation Events → show 2-column grid
+        cardPresentationEvents.setOnClickListener(v -> openPresentationEventsGrid());
 
         // BAA → show Firestore resource list
         cardBAA.setOnClickListener(v -> openCategory("Business Achievement Awards"));
     }
 
-    private void openObjectiveTestingGrid() {
+    private void hideAllLayouts() {
         layoutCategoryCards.setVisibility(View.GONE);
+        layoutObjectiveGrid.setVisibility(View.GONE);
+        layoutPresentationGrid.setVisibility(View.GONE);
+        layoutEventDetail.setVisibility(View.GONE);
         layoutResourceList.setVisibility(View.GONE);
+    }
+
+    private void openObjectiveTestingGrid() {
+        hideAllLayouts();
         layoutObjectiveGrid.setVisibility(View.VISIBLE);
+    }
+
+    private void openPresentationEventsGrid() {
+        hideAllLayouts();
+        layoutPresentationGrid.setVisibility(View.VISIBLE);
     }
 
     private void openCategory(String category) {
         currentCategory = category;
         textCurrentCategory.setText(category);
 
-        // Switch to resource list view
-        layoutCategoryCards.setVisibility(View.GONE);
-        layoutObjectiveGrid.setVisibility(View.GONE);
+        hideAllLayouts();
         layoutResourceList.setVisibility(View.VISIBLE);
 
         // Load resources for this category
@@ -269,9 +467,8 @@ public class ResourcesFragment extends Fragment {
 
     private void showCategoryCards() {
         currentCategory = null;
+        hideAllLayouts();
         layoutCategoryCards.setVisibility(View.VISIBLE);
-        layoutObjectiveGrid.setVisibility(View.GONE);
-        layoutResourceList.setVisibility(View.GONE);
     }
 
     private void setupClickListeners() {
@@ -279,6 +476,81 @@ public class ResourcesFragment extends Fragment {
         fabUpload.setOnClickListener(v -> showUploadDialog());
         btnBack.setOnClickListener(v -> showCategoryCards());
         btnBackGrid.setOnClickListener(v -> showCategoryCards());
+        btnBackPresentationGrid.setOnClickListener(v -> showCategoryCards());
+
+        // Event detail back button → go back to whichever grid we came from
+        btnBackEventDetail.setOnClickListener(v -> {
+            if ("presentation".equals(previousGrid)) {
+                openPresentationEventsGrid();
+            } else {
+                openObjectiveTestingGrid();
+            }
+        });
+
+        // Event Overview tab
+        tabEventOverview.setOnClickListener(v -> selectEventOverviewTab());
+
+        // Study Materials tab
+        tabStudyMaterials.setOnClickListener(v -> selectStudyMaterialsTab());
+
+        // Open Guidelines PDF button
+        btnOpenGuidelines.setOnClickListener(v -> {
+            if (currentEventGuidelineUrl != null && !currentEventGuidelineUrl.isEmpty()) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentEventGuidelineUrl));
+                startActivity(intent);
+            } else {
+                Toast.makeText(getContext(), "Guidelines not available yet", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // ==================== Event Detail View ====================
+
+    private void openEventDetail(String eventName, String guidelineUrl, String fromGrid) {
+        currentEventName = eventName;
+        currentEventGuidelineUrl = guidelineUrl;
+        previousGrid = fromGrid;
+
+        textEventDetailName.setText(eventName);
+
+        // Default to Event Overview tab
+        selectEventOverviewTab();
+
+        // Hide everything else, show event detail
+        hideAllLayouts();
+        layoutEventDetail.setVisibility(View.VISIBLE);
+    }
+
+    private void selectEventOverviewTab() {
+        // Highlight Event Overview tab
+        tabEventOverview.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
+                getResources().getColor(R.color.navy, null)));
+        tabEventOverview.setTextColor(getResources().getColor(R.color.white, null));
+
+        // Dim Study Materials tab
+        tabStudyMaterials.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
+                getResources().getColor(R.color.divider, null)));
+        tabStudyMaterials.setTextColor(getResources().getColor(R.color.text_secondary, null));
+
+        // Show/hide content
+        contentEventOverview.setVisibility(View.VISIBLE);
+        contentStudyMaterials.setVisibility(View.GONE);
+    }
+
+    private void selectStudyMaterialsTab() {
+        // Dim Event Overview tab
+        tabEventOverview.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
+                getResources().getColor(R.color.divider, null)));
+        tabEventOverview.setTextColor(getResources().getColor(R.color.text_secondary, null));
+
+        // Highlight Study Materials tab
+        tabStudyMaterials.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
+                getResources().getColor(R.color.navy, null)));
+        tabStudyMaterials.setTextColor(getResources().getColor(R.color.white, null));
+
+        // Show/hide content
+        contentEventOverview.setVisibility(View.GONE);
+        contentStudyMaterials.setVisibility(View.VISIBLE);
     }
 
     private void loadResources() {
@@ -610,9 +882,13 @@ public class ResourcesFragment extends Fragment {
     private class EventTileAdapter extends RecyclerView.Adapter<EventTileAdapter.TileViewHolder> {
 
         private final String[] eventNames;
+        private final Map<String, String> guidelineUrls;
+        private final String gridType; // "objective" or "presentation"
 
-        EventTileAdapter(String[] eventNames) {
+        EventTileAdapter(String[] eventNames, Map<String, String> guidelineUrls, String gridType) {
             this.eventNames = eventNames;
+            this.guidelineUrls = guidelineUrls;
+            this.gridType = gridType;
         }
 
         @NonNull
@@ -632,9 +908,10 @@ public class ResourcesFragment extends Fragment {
             holder.imgPlaceholderIcon.setVisibility(View.VISIBLE);
             holder.imgEventTile.setImageDrawable(null);
 
-            // Click listener — can be expanded later to open event-specific resources
+            // Click listener — opens event detail view with two tabs
             holder.itemView.setOnClickListener(v -> {
-                Toast.makeText(getContext(), eventName + " — resources coming soon!", Toast.LENGTH_SHORT).show();
+                String url = guidelineUrls.get(eventName);
+                openEventDetail(eventName, url, gridType);
             });
         }
 

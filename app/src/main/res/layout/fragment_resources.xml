@@ -382,6 +382,294 @@
 
             </LinearLayout>
 
+            <!-- ===== PRESENTATION EVENTS GRID VIEW (2-column grid of event tiles) ===== -->
+            <LinearLayout
+                android:id="@+id/layoutPresentationGrid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!-- Back button + title -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="12dp"
+                    android:background="@color/white">
+
+                    <ImageButton
+                        android:id="@+id/btnBackPresentationGrid"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@android:drawable/ic_menu_revert"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Back to categories"
+                        app:tint="@color/navy" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Presentation Event Resources"
+                        android:textColor="@color/navy"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="8dp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider" />
+
+                <!-- 2-column grid of presentation event tiles -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerPresentationTiles"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:padding="10dp"
+                    android:clipToPadding="false" />
+
+            </LinearLayout>
+
+            <!-- ===== EVENT DETAIL VIEW (shown after tapping an event tile) ===== -->
+            <LinearLayout
+                android:id="@+id/layoutEventDetail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!-- Back button + event name -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="12dp"
+                    android:background="@color/white">
+
+                    <ImageButton
+                        android:id="@+id/btnBackEventDetail"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@android:drawable/ic_menu_revert"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Back to event list"
+                        app:tint="@color/navy" />
+
+                    <TextView
+                        android:id="@+id/textEventDetailName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Event Name"
+                        android:textColor="@color/navy"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="8dp"
+                        android:maxLines="2"
+                        android:ellipsize="end" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider" />
+
+                <!-- Two tab buttons -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="10dp"
+                    android:background="@color/white">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/tabEventOverview"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:text="Event Overview"
+                        android:textAllCaps="false"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="6dp"
+                        app:cornerRadius="12dp"
+                        app:backgroundTint="@color/navy"
+                        android:textColor="@color/white" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/tabStudyMaterials"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:text="Study Materials"
+                        android:textAllCaps="false"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="6dp"
+                        app:cornerRadius="12dp"
+                        app:backgroundTint="@color/divider"
+                        android:textColor="@color/text_secondary"
+                        app:strokeColor="@color/divider"
+                        app:strokeWidth="1dp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider" />
+
+                <!-- Tab content area -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <!-- Event Overview content -->
+                    <ScrollView
+                        android:id="@+id/contentEventOverview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fillViewport="true">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="20dp">
+
+                            <!-- Event overview card -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:cardCornerRadius="16dp"
+                                app:cardElevation="2dp"
+                                app:cardBackgroundColor="@color/white"
+                                app:strokeColor="@color/divider"
+                                app:strokeWidth="1dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:padding="20dp">
+
+                                    <ImageView
+                                        android:layout_width="48dp"
+                                        android:layout_height="48dp"
+                                        android:src="@android:drawable/ic_menu_info_details"
+                                        app:tint="@color/cobalt"
+                                        android:contentDescription="Guidelines"
+                                        android:layout_gravity="center_horizontal" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="12dp"
+                                        android:text="Official Event Guidelines"
+                                        android:textColor="@color/navy"
+                                        android:textSize="18sp"
+                                        android:textStyle="bold"
+                                        android:gravity="center" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="8dp"
+                                        android:text="View the official FBLA competitive event guidelines, including event description, competencies, format, and rating sheets."
+                                        android:textColor="@color/text_secondary"
+                                        android:textSize="14sp"
+                                        android:gravity="center"
+                                        android:lineSpacingMultiplier="1.3" />
+
+                                    <com.google.android.material.button.MaterialButton
+                                        android:id="@+id/btnOpenGuidelines"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="52dp"
+                                        android:layout_marginTop="20dp"
+                                        android:text="Open Guidelines PDF"
+                                        android:textAllCaps="false"
+                                        android:textSize="15sp"
+                                        android:textStyle="bold"
+                                        app:cornerRadius="14dp"
+                                        app:backgroundTint="@color/cobalt"
+                                        android:textColor="@color/white"
+                                        app:icon="@android:drawable/ic_menu_view"
+                                        app:iconGravity="textStart"
+                                        app:iconTint="@color/white" />
+
+                                </LinearLayout>
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                        </LinearLayout>
+
+                    </ScrollView>
+
+                    <!-- Study Materials content -->
+                    <ScrollView
+                        android:id="@+id/contentStudyMaterials"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fillViewport="true"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="20dp"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:layout_width="80dp"
+                                android:layout_height="80dp"
+                                android:src="@android:drawable/ic_menu_edit"
+                                android:alpha="0.25"
+                                app:tint="@color/navy"
+                                android:contentDescription="Study Materials"
+                                android:layout_marginTop="40dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:text="Study Materials"
+                                android:textColor="@color/navy"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/textStudyMaterialsHint"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="Study materials for this event will be available soon."
+                                android:textColor="@color/text_secondary"
+                                android:textSize="14sp"
+                                android:textAlignment="center"
+                                android:lineSpacingMultiplier="1.3"
+                                android:paddingHorizontal="24dp" />
+
+                        </LinearLayout>
+
+                    </ScrollView>
+
+                </FrameLayout>
+
+            </LinearLayout>
+
             <!-- ===== RESOURCE LIST VIEW (shown after tapping a category) ===== -->
             <LinearLayout
                 android:id="@+id/layoutResourceList"
