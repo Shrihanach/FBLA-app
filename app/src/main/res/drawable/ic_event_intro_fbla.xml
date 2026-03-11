@@ -1,0 +1,10 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Torch/Flame - Introduction to FBLA -->
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M13.5,0.67 C13.5,0.67 14.24,3.32 14.24,5.47 C14.24,7.53 12.89,9.2 10.83,9.2 C8.76,9.2 7.2,7.53 7.2,5.47 L7.23,5.11 C5.21,7.51 4,10.62 4,14 C4,18.42 7.58,22 12,22 C16.42,22 20,18.42 20,14 C20,8.61 17.41,3.8 13.5,0.67 Z M11.71,19 C9.93,19 8.49,17.59 8.49,15.86 C8.49,14.24 9.64,13.1 11.43,12.74 C13.22,12.38 15.04,11.32 15.85,9.73 C16.36,11.22 16.64,12.82 16.64,14.5 C16.64,16.98 14.33,19 11.71,19 Z"/>
+</vector>

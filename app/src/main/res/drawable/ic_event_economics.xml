@@ -1,0 +1,13 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Trending up chart - Economics -->
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M16,6 L18.29,8.29 L13.41,13.17 L9.41,9.17 L2,16.59 L3.41,18 L9.41,12 L13.41,16 L19.71,9.71 L22,12 L22,6 Z"/>
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M2,20 L22,20 L22,22 L2,22 Z"/>
+</vector>

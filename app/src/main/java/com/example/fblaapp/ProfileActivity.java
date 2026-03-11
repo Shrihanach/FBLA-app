@@ -147,10 +147,13 @@ public class ProfileActivity extends AppCompatActivity {
             if (textUserEmail != null) {
                 textUserEmail.setText(currentUser.getEmail());
             }
-            if (textUserRole != null) {
-                String roleDisplay = currentUser.isOfficer() ? "Officer" : "Member";
-                textUserRole.setText(roleDisplay);
-            }
+            updateRoleBadge(currentUser);
+        }
+    }
+
+    private void updateRoleBadge(UserEntity user) {
+        if (textUserRole != null && user != null) {
+            textUserRole.setText(user.getRoleDisplayName());
         }
     }
 
@@ -170,14 +173,9 @@ public class ProfileActivity extends AppCompatActivity {
     private void setupRoleSpinner() {
         roles = new String[]{
                 getString(R.string.role_member),
+                getString(R.string.role_officer),
                 getString(R.string.role_president),
-                getString(R.string.role_vice_president),
-                getString(R.string.role_secretary),
-                getString(R.string.role_treasurer),
-                getString(R.string.role_reporter),
-                getString(R.string.role_historian),
-                getString(R.string.role_parliamentarian),
-                getString(R.string.role_advisor)
+                getString(R.string.role_teacher)
         };
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
@@ -187,6 +185,18 @@ public class ProfileActivity extends AppCompatActivity {
         );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerRole.setAdapter(adapter);
+
+        // Pre-select the spinner based on the current user's database role
+        UserEntity currentUser = authRepository.getCurrentUser();
+        if (currentUser != null) {
+            String displayRole = currentUser.getRoleDisplayName();
+            for (int i = 0; i < roles.length; i++) {
+                if (roles[i].equals(displayRole)) {
+                    spinnerRole.setSelection(i);
+                    break;
+                }
+            }
+        }
     }
 
     private void loadProfile() {
@@ -219,18 +229,43 @@ public class ProfileActivity extends AppCompatActivity {
     private void saveProfile() {
         String name = editName.getText().toString().trim();
         String chapter = editChapter.getText().toString().trim();
-        String role = spinnerRole.getSelectedItem().toString();
+        String selectedRole = spinnerRole.getSelectedItem().toString();
+
+        // Map the display role to the database constant
+        String dbRole = mapDisplayRoleToConstant(selectedRole);
+
+        // Update role in the database so isOfficer() works everywhere
+        authRepository.updateCurrentUserRole(dbRole);
 
         try {
             JSONObject profile = new JSONObject();
             profile.put("name", name);
             profile.put("chapter", chapter);
-            profile.put("role", role);
+            profile.put("role", selectedRole);
 
             prefs.edit().putString(KEY_PROFILE, profile.toString()).apply();
+
+            // Refresh the role badge in the header
+            UserEntity updatedUser = authRepository.getCurrentUser();
+            updateRoleBadge(updatedUser);
+
             Toast.makeText(this, R.string.profile_saved, Toast.LENGTH_SHORT).show();
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Maps a user-facing role name to the UserEntity database constant.
+     */
+    private String mapDisplayRoleToConstant(String displayRole) {
+        if (displayRole == null) return UserEntity.ROLE_MEMBER;
+        switch (displayRole) {
+            case "Officer":   return UserEntity.ROLE_OFFICER;
+            case "President": return UserEntity.ROLE_PRESIDENT;
+            case "Teacher":   return UserEntity.ROLE_TEACHER;
+            case "Member":
+            default:          return UserEntity.ROLE_MEMBER;
         }
     }
     

@@ -1,0 +1,16 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Umbrella/Shield - Insurance & Risk Management -->
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M12,2 C6.48,2 2,6.48 2,12 L4,12 C4,7.58 7.58,4 12,4 C16.42,4 20,7.58 20,12 L22,12 C22,6.48 17.52,2 12,2 Z"/>
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M11,12 L13,12 L13,19 C13,20.1 12.1,21 11,21 C9.9,21 9,20.1 9,19 L11,19 Z"/>
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M12,6 C9.24,6 6.76,7.51 5.56,10 L18.44,10 C17.24,7.51 14.76,6 12,6 Z"/>
+</vector>

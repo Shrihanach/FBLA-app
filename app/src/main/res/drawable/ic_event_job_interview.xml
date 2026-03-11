@@ -1,0 +1,13 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Handshake - Job Interview -->
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M12.22,19.85 C11.83,20.24 11.22,20.24 10.83,19.85 L5.1,14.12 L6.87,12.35 L11.53,17 L22,6.5 L22,4 L18.5,4 C17.5,4 16.5,4.45 15.84,5.17 L11.53,9.5 L9.17,7.14 C8.5,6.45 7.5,6 6.5,6 L2,6 L2,8.5 L6.5,8.5 L12.22,14.22"/>
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M2,12 L2,20 C2,21.1 2.9,22 4,22 L20,22 C21.1,22 22,21.1 22,20 L22,12 L18,16 L12,10 L6,16 Z"/>
+</vector>

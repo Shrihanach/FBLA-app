@@ -1,0 +1,19 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Chat bubbles - Business Communication -->
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M20,2 L4,2 C2.9,2 2,2.9 2,4 L2,22 L6,18 L20,18 C21.1,18 22,17.1 22,16 L22,4 C22,2.9 21.1,2 20,2 Z M20,16 L5.17,16 L4,17.17 L4,4 L20,4 Z"/>
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M7,9 L17,9 L17,11 L7,11 Z"/>
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M7,6 L14,6 L14,8 L7,8 Z"/>
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M7,12 L12,12 L12,14 L7,14 Z"/>
+</vector>

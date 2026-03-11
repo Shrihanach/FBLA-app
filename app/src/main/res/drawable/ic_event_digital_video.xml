@@ -1,0 +1,19 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Professional video camera - Digital Video Production -->
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M15,8 L15,16 L3,16 C1.9,16 1,15.1 1,14 L1,10 C1,8.9 1.9,8 3,8 Z"/>
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M17,9 L21,7 L21,17 L17,15 Z"/>
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M8,5 L10,5 L10,8 L8,8 Z"/>
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M7,17 L11,17 L11,19 L7,19 Z"/>
+</vector>

@@ -123,12 +123,13 @@
                             android:padding="16dp"
                             android:gravity="center_vertical">
 
-                            <!-- Image placeholder -->
+                            <!-- Category icon -->
                             <ImageView
                                 android:id="@+id/imgObjectiveTesting"
                                 android:layout_width="72dp"
                                 android:layout_height="72dp"
-                                android:scaleType="centerCrop"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/ic_cat_objective_testing"
                                 android:background="@drawable/category_image_placeholder"
                                 android:contentDescription="Objective Testing"
                                 android:layout_marginEnd="16dp" />
@@ -197,12 +198,13 @@
                             android:padding="16dp"
                             android:gravity="center_vertical">
 
-                            <!-- Image placeholder -->
+                            <!-- Category icon -->
                             <ImageView
                                 android:id="@+id/imgPresentationEvents"
                                 android:layout_width="72dp"
                                 android:layout_height="72dp"
-                                android:scaleType="centerCrop"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/ic_cat_presentation"
                                 android:background="@drawable/category_image_placeholder"
                                 android:contentDescription="Presentation Events"
                                 android:layout_marginEnd="16dp" />
@@ -249,7 +251,82 @@
 
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- Card 3: Business Achievement Awards -->
+                    <!-- Card 3: Roleplay Event Resources -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardRoleplayEvents"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="14dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="3dp"
+                        app:cardBackgroundColor="@color/white"
+                        app:strokeColor="@color/divider"
+                        app:strokeWidth="1dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:padding="16dp"
+                            android:gravity="center_vertical">
+
+                            <!-- Category icon -->
+                            <ImageView
+                                android:id="@+id/imgRoleplayEvents"
+                                android:layout_width="72dp"
+                                android:layout_height="72dp"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/ic_cat_roleplay"
+                                android:background="@drawable/category_image_placeholder"
+                                android:contentDescription="Roleplay Events"
+                                android:layout_marginEnd="16dp" />
+
+                            <!-- Text content -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Roleplay Event Resources"
+                                    android:textColor="@color/navy"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/descRoleplayEvents"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Case studies, roleplay scenarios, and prep materials for test &amp; roleplay events."
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="13sp"
+                                    android:layout_marginTop="4dp"
+                                    android:lineSpacingMultiplier="1.2"
+                                    android:maxLines="3"
+                                    android:ellipsize="end" />
+
+                            </LinearLayout>
+
+                            <!-- Arrow indicator -->
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@android:drawable/ic_media_play"
+                                app:tint="@color/cobalt"
+                                android:contentDescription="Open"
+                                android:layout_marginStart="8dp" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Card 4: Business Achievement Awards -->
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cardBAA"
                         android:layout_width="match_parent"
@@ -271,12 +348,13 @@
                             android:padding="16dp"
                             android:gravity="center_vertical">
 
-                            <!-- Image placeholder -->
+                            <!-- Category icon -->
                             <ImageView
                                 android:id="@+id/imgBAA"
                                 android:layout_width="72dp"
                                 android:layout_height="72dp"
-                                android:scaleType="centerCrop"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/ic_cat_baa"
                                 android:background="@drawable/category_image_placeholder"
                                 android:contentDescription="Business Achievement Awards"
                                 android:layout_marginEnd="16dp" />
@@ -429,6 +507,61 @@
                 <!-- 2-column grid of presentation event tiles -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerPresentationTiles"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:padding="10dp"
+                    android:clipToPadding="false" />
+
+            </LinearLayout>
+
+            <!-- ===== ROLEPLAY EVENTS GRID VIEW (2-column grid of event tiles) ===== -->
+            <LinearLayout
+                android:id="@+id/layoutRoleplayGrid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!-- Back button + title -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="12dp"
+                    android:background="@color/white">
+
+                    <ImageButton
+                        android:id="@+id/btnBackRoleplayGrid"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@android:drawable/ic_menu_revert"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Back to categories"
+                        app:tint="@color/navy" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Roleplay Event Resources"
+                        android:textColor="@color/navy"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="8dp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider" />
+
+                <!-- 2-column grid of roleplay event tiles -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerRoleplayTiles"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"

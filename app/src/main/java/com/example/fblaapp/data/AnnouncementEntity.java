@@ -37,6 +37,9 @@ public class AnnouncementEntity {
 
     private long createdAtMillis;
 
+    /** JSON string holding attachment data (files, links, audio, polls). May be null. */
+    private String attachmentJson;
+
     // Constructor
     public AnnouncementEntity(@NonNull String title, @NonNull String content, 
                                long createdByUserId, String authorName, long createdAtMillis) {
@@ -96,5 +99,13 @@ public class AnnouncementEntity {
 
     public void setAuthorName(String authorName) {
         this.authorName = authorName;
+    }
+
+    public String getAttachmentJson() {
+        return attachmentJson;
+    }
+
+    public void setAttachmentJson(String attachmentJson) {
+        this.attachmentJson = attachmentJson;
     }
 }

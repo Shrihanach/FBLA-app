@@ -65,6 +65,7 @@ public class ResourcesFragment extends Fragment {
     private ScrollView layoutCategoryCards;
     private MaterialCardView cardObjectiveTesting;
     private MaterialCardView cardPresentationEvents;
+    private MaterialCardView cardRoleplayEvents;
     private MaterialCardView cardBAA;
 
     // Views - Objective testing grid
@@ -76,6 +77,11 @@ public class ResourcesFragment extends Fragment {
     private LinearLayout layoutPresentationGrid;
     private ImageButton btnBackPresentationGrid;
     private RecyclerView recyclerPresentationTiles;
+
+    // Views - Roleplay events grid
+    private LinearLayout layoutRoleplayGrid;
+    private ImageButton btnBackRoleplayGrid;
+    private RecyclerView recyclerRoleplayTiles;
 
     // Views - Event detail (two-tab view inside each event)
     private LinearLayout layoutEventDetail;
@@ -108,6 +114,7 @@ public class ResourcesFragment extends Fragment {
     private ResourcesAdapter adapter;
     private EventTileAdapter eventTileAdapter;
     private EventTileAdapter presentationTileAdapter;
+    private EventTileAdapter roleplayTileAdapter;
     private final List<FirestoreResource> allResources = new ArrayList<>();
     private String currentCategory = null;
     private String currentEventName = null;
@@ -121,6 +128,94 @@ public class ResourcesFragment extends Fragment {
     private String selectedFileName = null;
     private ActivityResultLauncher<Intent> filePickerLauncher;
     private Dialog currentUploadDialog;
+
+    // Event icon mapping (event name → drawable resource ID)
+    private static final Map<String, Integer> EVENT_ICON_MAP = new HashMap<>();
+    static {
+        // Presentation / Role Play events
+        EVENT_ICON_MAP.put("Banking & Financial Systems", R.drawable.ic_event_banking);
+        EVENT_ICON_MAP.put("Business Management", R.drawable.ic_event_business_mgmt);
+        EVENT_ICON_MAP.put("Entrepreneurship", R.drawable.ic_event_entrepreneurship);
+        EVENT_ICON_MAP.put("Hospitality & Event Management", R.drawable.ic_event_hospitality);
+        EVENT_ICON_MAP.put("International Business", R.drawable.ic_event_international);
+        EVENT_ICON_MAP.put("Management Information Systems", R.drawable.ic_event_mis);
+        EVENT_ICON_MAP.put("Marketing", R.drawable.ic_event_marketing);
+        EVENT_ICON_MAP.put("Network Design", R.drawable.ic_event_network);
+        EVENT_ICON_MAP.put("Sports & Entertainment Management", R.drawable.ic_event_sports);
+        EVENT_ICON_MAP.put("Parliamentary Procedure", R.drawable.ic_event_parliamentary);
+        EVENT_ICON_MAP.put("Customer Service", R.drawable.ic_event_customer_service);
+        EVENT_ICON_MAP.put("Technology Support & Services", R.drawable.ic_event_tech_support);
+
+        // Objective Test events
+        EVENT_ICON_MAP.put("Accounting", R.drawable.ic_event_accounting);
+        EVENT_ICON_MAP.put("Advanced Accounting", R.drawable.ic_event_adv_accounting);
+        EVENT_ICON_MAP.put("Advertising", R.drawable.ic_event_advertising);
+        EVENT_ICON_MAP.put("Agribusiness", R.drawable.ic_event_agribusiness);
+        EVENT_ICON_MAP.put("Business Communication", R.drawable.ic_event_bus_communication);
+        EVENT_ICON_MAP.put("Business Law", R.drawable.ic_event_business_law);
+        EVENT_ICON_MAP.put("Computer Problem Solving", R.drawable.ic_event_comp_problem);
+        EVENT_ICON_MAP.put("Cybersecurity", R.drawable.ic_event_cybersecurity);
+        EVENT_ICON_MAP.put("Data Science & AI", R.drawable.ic_event_data_science);
+        EVENT_ICON_MAP.put("Economics", R.drawable.ic_event_economics);
+        EVENT_ICON_MAP.put("Healthcare Administration", R.drawable.ic_event_healthcare);
+        EVENT_ICON_MAP.put("Human Resource Management", R.drawable.ic_event_hr);
+        EVENT_ICON_MAP.put("Insurance & Risk Management", R.drawable.ic_event_insurance);
+        EVENT_ICON_MAP.put("Introduction to Business Communication", R.drawable.ic_event_intro_bus_comm);
+        EVENT_ICON_MAP.put("Introduction to Business Concepts", R.drawable.ic_event_intro_bus_concepts);
+        EVENT_ICON_MAP.put("Introduction to Business Procedures", R.drawable.ic_event_intro_bus_proc);
+        EVENT_ICON_MAP.put("Introduction to FBLA", R.drawable.ic_event_intro_fbla);
+        EVENT_ICON_MAP.put("Introduction to Information Technology", R.drawable.ic_event_intro_it);
+        EVENT_ICON_MAP.put("Introduction to Marketing Concepts", R.drawable.ic_event_intro_marketing);
+        EVENT_ICON_MAP.put("Introduction to Parliamentary Procedure", R.drawable.ic_event_intro_parl_proc);
+        EVENT_ICON_MAP.put("Introduction to Retail & Merchandising", R.drawable.ic_event_intro_retail);
+        EVENT_ICON_MAP.put("Introduction to Supply Chain Management", R.drawable.ic_event_intro_supply_chain);
+        EVENT_ICON_MAP.put("Journalism", R.drawable.ic_event_journalism);
+        EVENT_ICON_MAP.put("Networking Infrastructures", R.drawable.ic_event_net_infra);
+        EVENT_ICON_MAP.put("Organizational Leadership", R.drawable.ic_event_org_leadership);
+        EVENT_ICON_MAP.put("Personal Finance", R.drawable.ic_event_personal_finance);
+        EVENT_ICON_MAP.put("Project Management", R.drawable.ic_event_project_mgmt);
+        EVENT_ICON_MAP.put("Public Administration & Management", R.drawable.ic_event_public_admin);
+        EVENT_ICON_MAP.put("Real Estate", R.drawable.ic_event_real_estate);
+        EVENT_ICON_MAP.put("Retail Management", R.drawable.ic_event_retail);
+        EVENT_ICON_MAP.put("Securities & Investments", R.drawable.ic_event_securities);
+
+        // Presentation / Performance events (additional)
+        EVENT_ICON_MAP.put("Business Ethics", R.drawable.ic_event_business_ethics);
+        EVENT_ICON_MAP.put("Future Business Educator", R.drawable.ic_event_future_educator);
+        EVENT_ICON_MAP.put("Future Business Leader", R.drawable.ic_event_future_leader);
+        EVENT_ICON_MAP.put("Job Interview", R.drawable.ic_event_job_interview);
+        EVENT_ICON_MAP.put("Coding & Programming", R.drawable.ic_event_coding);
+        EVENT_ICON_MAP.put("Computer Game & Simulation Programming", R.drawable.ic_event_game_sim);
+
+        // Presentation Events (remaining)
+        EVENT_ICON_MAP.put("Broadcast Journalism", R.drawable.ic_event_broadcast_journalism);
+        EVENT_ICON_MAP.put("Digital Animation", R.drawable.ic_event_digital_animation);
+        EVENT_ICON_MAP.put("Digital Video Production", R.drawable.ic_event_digital_video);
+        EVENT_ICON_MAP.put("Event Planning", R.drawable.ic_event_event_planning);
+        EVENT_ICON_MAP.put("Career Portfolio", R.drawable.ic_event_career_portfolio);
+        EVENT_ICON_MAP.put("Sales Presentation", R.drawable.ic_event_sales_presentation);
+        EVENT_ICON_MAP.put("Data Analysis", R.drawable.ic_event_data_analysis);
+        EVENT_ICON_MAP.put("Financial Planning", R.drawable.ic_event_financial_planning);
+        EVENT_ICON_MAP.put("Financial Statement Analysis", R.drawable.ic_event_financial_statement);
+        EVENT_ICON_MAP.put("Graphic Design", R.drawable.ic_event_graphic_design);
+        EVENT_ICON_MAP.put("Introduction to Business", R.drawable.ic_event_intro_business);
+        EVENT_ICON_MAP.put("Introduction to Social Media Strategy", R.drawable.ic_event_intro_social_media);
+        EVENT_ICON_MAP.put("Public Service Announcement", R.drawable.ic_event_psa);
+        EVENT_ICON_MAP.put("Social Media Strategies", R.drawable.ic_event_social_media);
+        EVENT_ICON_MAP.put("Supply Chain Management", R.drawable.ic_event_supply_chain);
+        EVENT_ICON_MAP.put("Visual Design", R.drawable.ic_event_visual_design);
+        EVENT_ICON_MAP.put("Introduction to Programming", R.drawable.ic_event_intro_programming);
+        EVENT_ICON_MAP.put("Mobile Application Development", R.drawable.ic_event_mobile_app);
+        EVENT_ICON_MAP.put("Local Chapter Annual Business Report", R.drawable.ic_event_annual_report);
+        EVENT_ICON_MAP.put("Website Coding & Development", R.drawable.ic_event_website_coding);
+        EVENT_ICON_MAP.put("Website Design", R.drawable.ic_event_website_design);
+        EVENT_ICON_MAP.put("Business Plan", R.drawable.ic_event_business_plan);
+        EVENT_ICON_MAP.put("Community Service Project", R.drawable.ic_event_community_service);
+        EVENT_ICON_MAP.put("Computer Applications", R.drawable.ic_event_computer_apps);
+        EVENT_ICON_MAP.put("Impromptu Speaking", R.drawable.ic_event_impromptu_speaking);
+        EVENT_ICON_MAP.put("Introduction to Public Speaking", R.drawable.ic_event_intro_public_speaking);
+        EVENT_ICON_MAP.put("Public Speaking", R.drawable.ic_event_public_speaking);
+    }
 
     // FBLA 2026 Objective Test Events (31 events)
     private static final String[] OBJECTIVE_TEST_EVENTS = {
@@ -157,22 +252,24 @@ public class ResourcesFragment extends Fragment {
             "Securities & Investments"
     };
 
-    // FBLA 2026 Presentation / Role Play / Performance Events (45 events)
-    private static final String[] PRESENTATION_EVENTS = {
-            // Collaborative Test & Role Play
+    // FBLA 2026 Roleplay Events — Test + Case Study + Roleplay (12 events)
+    private static final String[] ROLEPLAY_EVENTS = {
             "Banking & Financial Systems",
             "Business Management",
+            "Customer Service",
             "Entrepreneurship",
             "Hospitality & Event Management",
             "International Business",
             "Management Information Systems",
             "Marketing",
             "Network Design",
-            "Sports & Entertainment Management",
             "Parliamentary Procedure",
-            // Individual Test & Role Play
-            "Customer Service",
-            "Technology Support & Services",
+            "Sports & Entertainment Management",
+            "Technology Support & Services"
+    };
+
+    // FBLA 2026 Presentation / Performance Events (33 events)
+    private static final String[] PRESENTATION_EVENTS = {
             // Objective Test + Presentation
             "Business Ethics",
             // Pre Judged & Presentation
@@ -343,6 +440,7 @@ public class ResourcesFragment extends Fragment {
         setupRecyclerView();
         setupEventTileGrid();
         setupPresentationTileGrid();
+        setupRoleplayTileGrid();
         setupCategoryCards();
         setupClickListeners();
     }
@@ -352,6 +450,7 @@ public class ResourcesFragment extends Fragment {
         layoutCategoryCards = view.findViewById(R.id.layoutCategoryCards);
         cardObjectiveTesting = view.findViewById(R.id.cardObjectiveTesting);
         cardPresentationEvents = view.findViewById(R.id.cardPresentationEvents);
+        cardRoleplayEvents = view.findViewById(R.id.cardRoleplayEvents);
         cardBAA = view.findViewById(R.id.cardBAA);
 
         // Objective testing grid
@@ -363,6 +462,11 @@ public class ResourcesFragment extends Fragment {
         layoutPresentationGrid = view.findViewById(R.id.layoutPresentationGrid);
         btnBackPresentationGrid = view.findViewById(R.id.btnBackPresentationGrid);
         recyclerPresentationTiles = view.findViewById(R.id.recyclerPresentationTiles);
+
+        // Roleplay events grid
+        layoutRoleplayGrid = view.findViewById(R.id.layoutRoleplayGrid);
+        btnBackRoleplayGrid = view.findViewById(R.id.btnBackRoleplayGrid);
+        recyclerRoleplayTiles = view.findViewById(R.id.recyclerRoleplayTiles);
 
         // Event detail view (two tabs)
         layoutEventDetail = view.findViewById(R.id.layoutEventDetail);
@@ -425,12 +529,21 @@ public class ResourcesFragment extends Fragment {
         recyclerPresentationTiles.setAdapter(presentationTileAdapter);
     }
 
+    private void setupRoleplayTileGrid() {
+        roleplayTileAdapter = new EventTileAdapter(ROLEPLAY_EVENTS, EVENT_GUIDELINE_URLS, "roleplay");
+        recyclerRoleplayTiles.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        recyclerRoleplayTiles.setAdapter(roleplayTileAdapter);
+    }
+
     private void setupCategoryCards() {
         // Objective Testing → show 2-column grid
         cardObjectiveTesting.setOnClickListener(v -> openObjectiveTestingGrid());
 
         // Presentation Events → show 2-column grid
         cardPresentationEvents.setOnClickListener(v -> openPresentationEventsGrid());
+
+        // Roleplay Events → show 2-column grid
+        cardRoleplayEvents.setOnClickListener(v -> openRoleplayEventsGrid());
 
         // BAA → show Firestore resource list
         cardBAA.setOnClickListener(v -> openCategory("Business Achievement Awards"));
@@ -440,6 +553,7 @@ public class ResourcesFragment extends Fragment {
         layoutCategoryCards.setVisibility(View.GONE);
         layoutObjectiveGrid.setVisibility(View.GONE);
         layoutPresentationGrid.setVisibility(View.GONE);
+        layoutRoleplayGrid.setVisibility(View.GONE);
         layoutEventDetail.setVisibility(View.GONE);
         layoutResourceList.setVisibility(View.GONE);
     }
@@ -452,6 +566,11 @@ public class ResourcesFragment extends Fragment {
     private void openPresentationEventsGrid() {
         hideAllLayouts();
         layoutPresentationGrid.setVisibility(View.VISIBLE);
+    }
+
+    private void openRoleplayEventsGrid() {
+        hideAllLayouts();
+        layoutRoleplayGrid.setVisibility(View.VISIBLE);
     }
 
     private void openCategory(String category) {
@@ -477,11 +596,14 @@ public class ResourcesFragment extends Fragment {
         btnBack.setOnClickListener(v -> showCategoryCards());
         btnBackGrid.setOnClickListener(v -> showCategoryCards());
         btnBackPresentationGrid.setOnClickListener(v -> showCategoryCards());
+        btnBackRoleplayGrid.setOnClickListener(v -> showCategoryCards());
 
         // Event detail back button → go back to whichever grid we came from
         btnBackEventDetail.setOnClickListener(v -> {
             if ("presentation".equals(previousGrid)) {
                 openPresentationEventsGrid();
+            } else if ("roleplay".equals(previousGrid)) {
+                openRoleplayEventsGrid();
             } else {
                 openObjectiveTestingGrid();
             }
@@ -904,9 +1026,30 @@ public class ResourcesFragment extends Fragment {
             String eventName = eventNames[position];
             holder.textEventName.setText(eventName);
 
-            // Placeholder icon visible by default (will be hidden when real images are set)
-            holder.imgPlaceholderIcon.setVisibility(View.VISIBLE);
-            holder.imgEventTile.setImageDrawable(null);
+            // Check if this event has a custom icon
+            Integer iconRes = EVENT_ICON_MAP.get(eventName);
+            if (iconRes != null) {
+                // Show custom event icon - larger and fully opaque
+                holder.imgPlaceholderIcon.setVisibility(View.VISIBLE);
+                holder.imgPlaceholderIcon.setImageResource(iconRes);
+                holder.imgPlaceholderIcon.setAlpha(1.0f);
+                holder.imgPlaceholderIcon.getLayoutParams().width =
+                        (int) (56 * holder.itemView.getResources().getDisplayMetrics().density);
+                holder.imgPlaceholderIcon.getLayoutParams().height =
+                        (int) (56 * holder.itemView.getResources().getDisplayMetrics().density);
+                holder.imgPlaceholderIcon.setColorFilter(null);
+                holder.imgEventTile.setImageDrawable(null);
+            } else {
+                // Default placeholder icon for events without custom icons
+                holder.imgPlaceholderIcon.setVisibility(View.VISIBLE);
+                holder.imgPlaceholderIcon.setImageResource(android.R.drawable.ic_menu_agenda);
+                holder.imgPlaceholderIcon.setAlpha(0.25f);
+                holder.imgPlaceholderIcon.getLayoutParams().width =
+                        (int) (40 * holder.itemView.getResources().getDisplayMetrics().density);
+                holder.imgPlaceholderIcon.getLayoutParams().height =
+                        (int) (40 * holder.itemView.getResources().getDisplayMetrics().density);
+                holder.imgEventTile.setImageDrawable(null);
+            }
 
             // Click listener — opens event detail view with two tabs
             holder.itemView.setOnClickListener(v -> {

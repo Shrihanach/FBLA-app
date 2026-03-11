@@ -1,0 +1,88 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="72dp"
+    android:height="72dp"
+    android:viewportWidth="72"
+    android:viewportHeight="72">
+
+    <!-- Clipboard board (gold) -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M16,8 L56,8 L56,64 L16,64 Z"/>
+    <!-- Clipboard border -->
+    <path
+        android:fillColor="#DAA520"
+        android:pathData="M16,8 L56,8 L56,64 L16,64 Z M18,10 L18,62 L54,62 L54,10 Z"/>
+
+    <!-- Clipboard clip (navy) -->
+    <path
+        android:fillColor="#001F5B"
+        android:pathData="M28,4 L44,4 L44,14 L28,14 Z"/>
+    <path
+        android:fillColor="#001F5B"
+        android:pathData="M32,2 L40,2 C41.1,2 42,2.9 42,4 L30,4 C30,2.9 30.9,2 32,2 Z"/>
+
+    <!-- Clipboard sheet (white) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M20,14 L52,14 L52,60 L20,60 Z"/>
+
+    <!-- Checkboxes (blue) -->
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M23,20 L31,20 L31,28 L23,28 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M25,24 L27,26 L29,22 L30,23 L27,28 L24,25 Z"/>
+
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M23,32 L31,32 L31,40 L23,40 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M25,36 L27,38 L29,34 L30,35 L27,40 L24,37 Z"/>
+
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M23,44 L31,44 L31,52 L23,52 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M25,48 L27,50 L29,46 L30,47 L27,52 L24,49 Z"/>
+
+    <!-- Lines next to checkboxes -->
+    <path
+        android:fillColor="#B0BEC5"
+        android:pathData="M34,23 L49,23 L49,25 L34,25 Z"/>
+    <path
+        android:fillColor="#B0BEC5"
+        android:pathData="M34,35 L49,35 L49,37 L34,37 Z"/>
+    <path
+        android:fillColor="#B0BEC5"
+        android:pathData="M34,47 L49,47 L49,49 L34,49 Z"/>
+
+    <!-- ABCD card (floating top-right) -->
+    <path
+        android:fillColor="#E8EAF6"
+        android:pathData="M44,6 L62,6 C63.1,6 64,6.9 64,8 L64,34 C64,35.1 63.1,36 62,36 L44,36 C42.9,36 42,35.1 42,34 L42,8 C42,6.9 42.9,6 44,6 Z"/>
+
+    <!-- A B C D letters -->
+    <path
+        android:fillColor="#001F5B"
+        android:pathData="M46,12 L48,12 L48,14 L46,14 Z M50,12 L60,12 L60,14 L50,14 Z"/>
+    <path
+        android:fillColor="#001F5B"
+        android:pathData="M46,18 L48,18 L48,20 L46,20 Z M50,18 L60,18 L60,20 L50,20 Z"/>
+    <path
+        android:fillColor="#001F5B"
+        android:pathData="M46,24 L48,24 L48,26 L46,26 Z M50,24 L60,24 L60,26 L50,26 Z"/>
+    <path
+        android:fillColor="#001F5B"
+        android:pathData="M46,30 L48,30 L48,32 L46,32 Z M50,30 L60,30 L60,32 L50,32 Z"/>
+
+    <!-- Check circle on ABCD card -->
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M57,30 C60.3,30 63,32.7 63,36 C63,39.3 60.3,42 57,42 C53.7,42 51,39.3 51,36 C51,32.7 53.7,30 57,30 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M55,36 L56.5,37.5 L59,34 L60,35 L56.5,39.5 L54,37 Z"/>
+</vector>

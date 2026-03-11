@@ -1,0 +1,10 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Network Hub - Network Design -->
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M17,16 L13,12 L13,8.82 C14.16,8.4 15,7.3 15,6 C15,4.34 13.66,3 12,3 C10.34,3 9,4.34 9,6 C9,7.3 9.84,8.4 11,8.82 L11,12 L7,16 L4,16 L4,21 L9,21 L9,18.05 L12,14.05 L15,18.05 L15,21 L20,21 L20,16 Z"/>
+</vector>

@@ -162,6 +162,17 @@ public class AuthRepository {
     }
 
     /**
+     * Update the role of the currently logged-in user.
+     * @param role One of UserEntity.ROLE_MEMBER, ROLE_OFFICER, ROLE_PRESIDENT, ROLE_TEACHER
+     */
+    public void updateCurrentUserRole(String role) {
+        UserEntity current = getCurrentUser();
+        if (current != null && role != null) {
+            userDao.updateUserRole(current.getId(), role);
+        }
+    }
+
+    /**
      * Hash a password using SHA-256.
      */
     private String hashPassword(String password) {

@@ -36,6 +36,12 @@ public interface UserDao {
     int getUserCount();
 
     /**
+     * Update a user's role.
+     */
+    @Query("UPDATE users SET role = :role WHERE id = :userId")
+    void updateUserRole(long userId, String role);
+
+    /**
      * Delete all users (for testing purposes).
      */
     @Query("DELETE FROM users")

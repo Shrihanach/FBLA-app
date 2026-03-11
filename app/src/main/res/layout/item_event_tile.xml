@@ -32,16 +32,15 @@
                 android:scaleType="centerCrop"
                 android:contentDescription="Event image" />
 
-            <!-- Placeholder icon (shown when no image is set) -->
+            <!-- Event icon (custom icon or placeholder) -->
             <ImageView
                 android:id="@+id/imgPlaceholderIcon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
                 android:layout_gravity="center"
                 android:src="@android:drawable/ic_menu_agenda"
                 android:alpha="0.25"
-                app:tint="@color/navy"
-                android:contentDescription="Placeholder" />
+                android:contentDescription="Event icon" />
 
         </FrameLayout>
 

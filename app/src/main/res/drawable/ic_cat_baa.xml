@@ -1,0 +1,56 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="72dp"
+    android:height="72dp"
+    android:viewportWidth="72"
+    android:viewportHeight="72">
+
+    <!-- Medal ribbon (navy V-shape) -->
+    <path
+        android:fillColor="#001F5B"
+        android:pathData="M22,2 L36,30 L50,2 L56,2 L56,36 L40,36 L36,32 L32,36 L16,36 L16,2 Z"/>
+
+    <!-- Ribbon highlight stripe -->
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M26,2 L36,24 L46,2 L50,2 L36,30 L22,2 Z"/>
+
+    <!-- Medal circle (gold) -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M36,32 C45.9,32 54,40.1 54,50 C54,59.9 45.9,68 36,68 C26.1,68 18,59.9 18,50 C18,40.1 26.1,32 36,32 Z"/>
+
+    <!-- Medal inner circle border -->
+    <path
+        android:fillColor="#DAA520"
+        android:pathData="M36,36 C43.7,36 50,42.3 50,50 C50,57.7 43.7,64 36,64 C28.3,64 22,57.7 22,50 C22,42.3 28.3,36 36,36 Z M36,38 C29.4,38 24,43.4 24,50 C24,56.6 29.4,62 36,62 C42.6,62 48,56.6 48,50 C48,43.4 42.6,38 36,38 Z"/>
+
+    <!-- Medal inner circle (lighter gold) -->
+    <path
+        android:fillColor="#FFF8DC"
+        android:pathData="M36,38 C42.6,38 48,43.4 48,50 C48,56.6 42.6,62 36,62 C29.4,62 24,56.6 24,50 C24,43.4 29.4,38 36,38 Z"/>
+
+    <!-- Star in center of medal -->
+    <path
+        android:fillColor="#DAA520"
+        android:pathData="M36,42 L38.2,47.5 L44,47.8 L39.5,51.5 L41,57 L36,54 L31,57 L32.5,51.5 L28,47.8 L33.8,47.5 Z"/>
+
+    <!-- Sparkle dots around medal -->
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M14,38 L16,38 L16,40 L14,40 Z"/>
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M56,42 L58,42 L58,44 L56,44 Z"/>
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M10,50 L12,50 L12,52 L10,52 Z"/>
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M60,54 L62,54 L62,56 L60,56 Z"/>
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M54,34 L55,34 L55,35 L54,35 Z"/>
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M16,58 L17,58 L17,59 L16,59 Z"/>
+</vector>

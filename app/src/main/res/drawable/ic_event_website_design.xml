@@ -1,0 +1,22 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Browser with design layout - Website Design -->
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M20,4 L4,4 C2.9,4 2,4.9 2,6 L2,18 C2,19.1 2.9,20 4,20 L20,20 C21.1,20 22,19.1 22,18 L22,6 C22,4.9 21.1,4 20,4 Z M20,18 L4,18 L4,8 L20,8 Z"/>
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M5,9 L11,9 L11,14 L5,14 Z"/>
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M13,9 L19,9 L19,11 L13,11 Z"/>
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M13,13 L19,13 L19,17 L13,17 Z"/>
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M5,16 L11,16 L11,17 L5,17 Z"/>
+</vector>

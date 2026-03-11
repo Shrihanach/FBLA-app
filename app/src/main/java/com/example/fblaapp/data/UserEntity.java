@@ -71,12 +71,33 @@ public class UserEntity {
     // Role constants
     public static final String ROLE_MEMBER = "MEMBER";
     public static final String ROLE_OFFICER = "OFFICER";
+    public static final String ROLE_PRESIDENT = "PRESIDENT";
+    public static final String ROLE_TEACHER = "TEACHER";
 
+    /**
+     * Returns true if the user has elevated privileges (Officer, President, or Teacher).
+     */
     public boolean isOfficer() {
-        return ROLE_OFFICER.equals(role);
+        return ROLE_OFFICER.equals(role)
+                || ROLE_PRESIDENT.equals(role)
+                || ROLE_TEACHER.equals(role);
     }
 
     public boolean isMember() {
         return ROLE_MEMBER.equals(role);
+    }
+
+    /**
+     * Returns a user-friendly display name for the role.
+     */
+    public String getRoleDisplayName() {
+        if (role == null) return "Member";
+        switch (role) {
+            case ROLE_OFFICER:   return "Officer";
+            case ROLE_PRESIDENT: return "President";
+            case ROLE_TEACHER:   return "Teacher";
+            case ROLE_MEMBER:
+            default:             return "Member";
+        }
     }
 }

@@ -1,0 +1,10 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Film strip with play - Digital Animation -->
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M18,4 L6,4 C4.9,4 4,4.9 4,6 L4,18 C4,19.1 4.9,20 6,20 L18,20 C19.1,20 20,19.1 20,18 L20,6 C20,4.9 19.1,4 18,4 Z M6,6 L8,6 L8,8 L6,8 Z M6,10 L8,10 L8,12 L6,12 Z M6,18 L6,16 L8,16 L8,18 Z M6,14 L8,14 L8,16 L6,16 Z M16,18 L18,18 L18,16 L16,16 Z M10,15 L10,9 L15,12 Z M16,14 L18,14 L18,12 L16,12 Z M16,10 L18,10 L18,8 L16,8 Z M16,6 L18,6 L18,8 L16,8 Z"/>
+</vector>

@@ -65,14 +65,9 @@
     
     <!-- Roles -->
     <string name="role_member">Member</string>
+    <string name="role_officer">Officer</string>
     <string name="role_president">President</string>
-    <string name="role_vice_president">Vice President</string>
-    <string name="role_secretary">Secretary</string>
-    <string name="role_treasurer">Treasurer</string>
-    <string name="role_reporter">Reporter</string>
-    <string name="role_historian">Historian</string>
-    <string name="role_parliamentarian">Parliamentarian</string>
-    <string name="role_advisor">Advisor</string>
+    <string name="role_teacher">Teacher</string>
     
     <!-- Event Management -->
     <string name="edit_event">Edit Event</string>

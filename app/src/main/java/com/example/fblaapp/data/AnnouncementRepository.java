@@ -94,6 +94,14 @@ public class AnnouncementRepository {
      * Only officers can create announcements.
      */
     public long createAnnouncement(String title, String content) throws SecurityException {
+        return createAnnouncement(title, content, null);
+    }
+
+    /**
+     * Create a new announcement with optional attachment JSON.
+     * Only officers can create announcements.
+     */
+    public long createAnnouncement(String title, String content, String attachmentJson) throws SecurityException {
         if (!isOfficer()) {
             throw new SecurityException("Only officers can post announcements");
         }
@@ -113,6 +121,9 @@ public class AnnouncementRepository {
                 getCurrentUserName(),
                 System.currentTimeMillis()
         );
+        if (attachmentJson != null && !attachmentJson.isEmpty()) {
+            announcement.setAttachmentJson(attachmentJson);
+        }
 
         return announcementDao.insert(announcement);
     }
@@ -122,6 +133,14 @@ public class AnnouncementRepository {
      * Only the officer who created it can edit.
      */
     public int updateAnnouncement(long announcementId, String title, String content) throws SecurityException {
+        return updateAnnouncement(announcementId, title, content, null);
+    }
+
+    /**
+     * Update an existing announcement with optional attachment JSON.
+     * Only the officer who created it can edit.
+     */
+    public int updateAnnouncement(long announcementId, String title, String content, String attachmentJson) throws SecurityException {
         if (!isOfficer()) {
             throw new SecurityException("Only officers can edit announcements");
         }
@@ -146,6 +165,7 @@ public class AnnouncementRepository {
 
         announcement.setTitle(title.trim());
         announcement.setContent(content.trim());
+        announcement.setAttachmentJson(attachmentJson);
 
         return announcementDao.update(announcement);
     }

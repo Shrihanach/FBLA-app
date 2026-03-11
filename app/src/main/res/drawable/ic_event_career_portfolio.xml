@@ -1,0 +1,16 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Folder/portfolio - Career Portfolio -->
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M20,6 L12,6 L10,4 L4,4 C2.9,4 2,4.9 2,6 L2,18 C2,19.1 2.9,20 4,20 L20,20 C21.1,20 22,19.1 22,18 L22,8 C22,6.9 21.1,6 20,6 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,12 C13.1,12 14,11.1 14,10 C14,8.9 13.1,8 12,8 C10.9,8 10,8.9 10,10 C10,11.1 10.9,12 12,12 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M8,17 L16,17 L16,16 C16,14.67 13.33,14 12,14 C10.67,14 8,14.67 8,16 Z"/>
+</vector>

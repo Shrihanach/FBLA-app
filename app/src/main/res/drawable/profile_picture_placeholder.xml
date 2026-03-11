@@ -1,13 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <shape android:shape="oval">
-            <solid android:color="@color/navy_light" />
-        </shape>
-    </item>
-    <item
-        android:drawable="@android:drawable/ic_menu_gallery"
-        android:gravity="center"
-        android:width="40dp"
-        android:height="40dp" />
-</layer-list>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+
+    <!-- Orange background fill -->
+    <path
+        android:fillColor="#FFA000"
+        android:pathData="M0,0H100V100H0Z" />
+
+    <!-- Person head (circle) — lighter gold -->
+    <path
+        android:fillColor="#FFCC66"
+        android:pathData="M50,28
+                          C56.63,28 62,33.37 62,40
+                          C62,46.63 56.63,52 50,52
+                          C43.37,52 38,46.63 38,40
+                          C38,33.37 43.37,28 50,28Z" />
+
+    <!-- Person body/shoulders (dome) — lighter gold -->
+    <path
+        android:fillColor="#FFCC66"
+        android:pathData="M50,58
+                          C64,58 76,65 76,76
+                          L76,82
+                          L24,82
+                          L24,76
+                          C24,65 36,58 50,58Z" />
+
+</vector>

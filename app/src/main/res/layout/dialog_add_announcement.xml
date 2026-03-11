@@ -24,6 +24,7 @@
         android:layout_marginBottom="20dp"
         android:background="@drawable/gold_accent_line" />
 
+    <!-- Title Input -->
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,6 +48,7 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Content Input -->
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -70,12 +72,241 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- ===== Formatting Toolbar ===== -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp"
+        android:paddingVertical="4dp"
+        android:paddingHorizontal="4dp"
+        android:background="@drawable/toolbar_format_background">
+
+        <!-- Bold -->
+        <ImageButton
+            android:id="@+id/btnFormatBold"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_format_bold"
+            android:background="@drawable/toolbar_btn_background"
+            android:scaleType="centerInside"
+            android:padding="6dp"
+            android:contentDescription="Bold"
+            app:tint="@color/cobalt" />
+
+        <!-- Underline -->
+        <ImageButton
+            android:id="@+id/btnFormatUnderline"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_format_underline"
+            android:background="@drawable/toolbar_btn_background"
+            android:scaleType="centerInside"
+            android:padding="6dp"
+            android:layout_marginStart="2dp"
+            android:contentDescription="Underline"
+            app:tint="@color/cobalt" />
+
+        <!-- Indent -->
+        <ImageButton
+            android:id="@+id/btnFormatIndent"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_format_indent"
+            android:background="@drawable/toolbar_btn_background"
+            android:scaleType="centerInside"
+            android:padding="6dp"
+            android:layout_marginStart="2dp"
+            android:contentDescription="Indent"
+            app:tint="@color/cobalt" />
+
+        <!-- Divider -->
+        <View
+            android:layout_width="1dp"
+            android:layout_height="24dp"
+            android:background="#C0C8E0"
+            android:layout_marginHorizontal="8dp" />
+
+        <!-- Bullet List -->
+        <ImageButton
+            android:id="@+id/btnFormatBulletList"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_format_list_bulleted"
+            android:background="@drawable/toolbar_btn_background"
+            android:scaleType="centerInside"
+            android:padding="6dp"
+            android:contentDescription="Bullet List"
+            app:tint="@color/cobalt" />
+
+        <!-- Number List -->
+        <ImageButton
+            android:id="@+id/btnFormatNumberList"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_format_list_numbered"
+            android:background="@drawable/toolbar_btn_background"
+            android:scaleType="centerInside"
+            android:padding="6dp"
+            android:layout_marginStart="2dp"
+            android:contentDescription="Numbered List"
+            app:tint="@color/cobalt" />
+
+    </LinearLayout>
+
+    <!-- ===== Attachment Bar ===== -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp"
+        android:paddingVertical="6dp"
+        android:paddingHorizontal="4dp"
+        android:background="@drawable/toolbar_format_background">
+
+        <!-- Attach File -->
+        <LinearLayout
+            android:id="@+id/btnAttachFile"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="6dp"
+            android:background="@drawable/toolbar_btn_background"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_attach_file"
+                app:tint="@color/cobalt"
+                android:contentDescription="Attach File" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="File"
+                android:textSize="10sp"
+                android:textColor="@color/cobalt"
+                android:layout_marginTop="2dp" />
+
+        </LinearLayout>
+
+        <!-- Attach Link -->
+        <LinearLayout
+            android:id="@+id/btnAttachLink"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="6dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/toolbar_btn_background"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_attach_link"
+                app:tint="@color/cobalt"
+                android:contentDescription="Attach Link" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Link"
+                android:textSize="10sp"
+                android:textColor="@color/cobalt"
+                android:layout_marginTop="2dp" />
+
+        </LinearLayout>
+
+        <!-- Attach Audio -->
+        <LinearLayout
+            android:id="@+id/btnAttachAudio"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="6dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/toolbar_btn_background"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_attach_audio"
+                app:tint="@color/cobalt"
+                android:contentDescription="Attach Audio" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Audio"
+                android:textSize="10sp"
+                android:textColor="@color/cobalt"
+                android:layout_marginTop="2dp" />
+
+        </LinearLayout>
+
+        <!-- Attach Poll -->
+        <LinearLayout
+            android:id="@+id/btnAttachPoll"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="6dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/toolbar_btn_background"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_attach_poll"
+                app:tint="@color/cobalt"
+                android:contentDescription="Attach Poll" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Poll"
+                android:textSize="10sp"
+                android:textColor="@color/cobalt"
+                android:layout_marginTop="2dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- ===== Attachment Preview Chips ===== -->
+    <LinearLayout
+        android:id="@+id/layoutAttachmentChips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="8dp"
+        android:visibility="gone" />
+
+    <!-- ===== Action Buttons ===== -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="end"
-        android:layout_marginTop="24dp">
+        android:layout_marginTop="20dp">
 
         <Button
             android:id="@+id/btnCancel"

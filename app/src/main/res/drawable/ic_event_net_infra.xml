@@ -1,0 +1,13 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Server rack - Networking Infrastructures -->
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M20,2 L4,2 C2.9,2 2,2.9 2,4 L2,8 C2,9.1 2.9,10 4,10 L20,10 C21.1,10 22,9.1 22,8 L22,4 C22,2.9 21.1,2 20,2 Z M6,7 C5.45,7 5,6.55 5,6 C5,5.45 5.45,5 6,5 C6.55,5 7,5.45 7,6 C7,6.55 6.55,7 6,7 Z"/>
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M20,12 L4,12 C2.9,12 2,12.9 2,14 L2,18 C2,19.1 2.9,20 4,20 L20,20 C21.1,20 22,19.1 22,18 L22,14 C22,12.9 21.1,12 20,12 Z M6,17 C5.45,17 5,16.55 5,16 C5,15.45 5.45,15 6,15 C6.55,15 7,15.45 7,16 C7,16.55 6.55,17 6,17 Z"/>
+</vector>

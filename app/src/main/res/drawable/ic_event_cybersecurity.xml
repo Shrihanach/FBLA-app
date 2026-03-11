@@ -1,0 +1,13 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Shield with lock - Cybersecurity -->
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M12,1 L3,5 L3,11 C3,16.55 6.84,21.74 12,23 C17.16,21.74 21,16.55 21,11 L21,5 Z M12,21 C7.82,19.87 5,15.56 5,11.09 L5,6.3 L12,3.19 L19,6.3 L19,11.09 C19,15.56 16.18,19.87 12,21 Z"/>
+    <path
+        android:fillColor="#0047AB"
+        android:pathData="M11,10 L11,8 C11,7.45 11.45,7 12,7 C12.55,7 13,7.45 13,8 L13,10 L14,10 C14.55,10 15,10.45 15,11 L15,15 C15,15.55 14.55,16 14,16 L10,16 C9.45,16 9,15.55 9,15 L9,11 C9,10.45 9.45,10 10,10 Z M12,14 C12.55,14 13,13.55 13,13 C13,12.45 12.55,12 12,12 C11.45,12 11,12.45 11,13 C11,13.55 11.45,14 12,14 Z"/>
+</vector>

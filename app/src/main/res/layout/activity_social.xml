@@ -15,9 +15,21 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/header_curved_background"
-        android:paddingTop="24dp"
-        android:paddingBottom="28dp"
-        android:gravity="center">
+        android:paddingTop="20dp"
+        android:paddingBottom="24dp"
+        android:paddingHorizontal="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
@@ -30,24 +42,39 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Follow FBLA on social media"
+                    android:text="Follow our chapter channels"
             android:textColor="@color/fbla_gold"
             android:textSize="13sp"
-            android:layout_marginTop="4dp" />
+                    android:layout_marginTop="2dp" />
 
-        <!-- Gold accent line -->
-        <View
-            android:layout_width="40dp"
-            android:layout_height="4dp"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/gold_accent_line" />
+            </LinearLayout>
+
+            <!-- Officer Edit Links Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEditLinks"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="Edit Links"
+                android:textAllCaps="false"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:cornerRadius="10dp"
+                app:backgroundTint="@color/fbla_gold"
+                android:textColor="@color/navy"
+                app:icon="@android:drawable/ic_menu_edit"
+                app:iconTint="@color/navy"
+                app:iconSize="14dp"
+                android:visibility="gone" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,7 +82,396 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- National FBLA Section -->
+            <!-- ===== CHAPTER CHANNELS SECTION ===== -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chapter Channels"
+                android:textColor="@color/navy"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="14dp"
+                android:paddingHorizontal="4dp" />
+
+            <!-- ===== INSTAGRAM CARD ===== -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="6dp">
+
+                <!-- Big Instagram Platform Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/social_card_instagram"
+                    android:orientation="vertical"
+                    android:padding="20dp"
+                    android:minHeight="160dp">
+
+                    <!-- Top row: Icon + Platform name -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/ic_social_instagram"
+                            android:scaleType="fitCenter"
+                            android:contentDescription="Instagram" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="14dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Instagram"
+                                android:textColor="@color/white"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/textInstagramHandle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="\@fbla_chapter"
+                                android:textColor="#DDffffff"
+                                android:textSize="15sp"
+                                android:layout_marginTop="1dp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Action buttons row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="20dp"
+                        android:gravity="center_vertical">
+
+                        <!-- Open button -->
+                        <LinearLayout
+                            android:id="@+id/btnOpenInstagram"
+                            android:layout_width="0dp"
+                            android:layout_height="44dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/social_btn_outline_white"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:layout_marginEnd="6dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@android:drawable/ic_menu_send"
+                                app:tint="@color/white"
+                                android:contentDescription="Open" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Open"
+                                android:textColor="@color/white"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:layout_marginStart="6dp" />
+
+                        </LinearLayout>
+
+                        <!-- Copy Handle button -->
+                        <LinearLayout
+                            android:id="@+id/btnCopyInstagram"
+                            android:layout_width="0dp"
+                            android:layout_height="44dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/social_btn_outline_white"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:layout_marginHorizontal="6dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@android:drawable/ic_menu_agenda"
+                                app:tint="@color/white"
+                                android:contentDescription="Copy" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Copy"
+                                android:textColor="@color/white"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:layout_marginStart="6dp" />
+
+                        </LinearLayout>
+
+                        <!-- Share button -->
+                        <LinearLayout
+                            android:id="@+id/btnShareInstagram"
+                            android:layout_width="0dp"
+                            android:layout_height="44dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/social_btn_outline_white"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:layout_marginStart="6dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@android:drawable/ic_menu_share"
+                                app:tint="@color/white"
+                                android:contentDescription="Share" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Share"
+                                android:textColor="@color/white"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:layout_marginStart="6dp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Latest Post Preview (below card) -->
+                <LinearLayout
+                    android:id="@+id/layoutInstagramPost"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/latest_post_background"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Latest Post"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.05" />
+
+                    <TextView
+                        android:id="@+id/textInstagramPostTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="No recent posts"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="6dp"
+                        android:maxLines="2"
+                        android:ellipsize="end" />
+
+                    <TextView
+                        android:id="@+id/textInstagramPostSnippet"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Check back soon for updates from our chapter."
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp"
+                        android:layout_marginTop="3dp"
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:lineSpacingMultiplier="1.2" />
+
+                    <TextView
+                        android:id="@+id/textInstagramPostTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_hint"
+                        android:textSize="11sp"
+                        android:layout_marginTop="4dp"
+                        android:visibility="gone" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnInstagramViewMore"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginTop="8dp"
+                        android:text="View more on Instagram"
+                        android:textAllCaps="false"
+                        android:textSize="12sp"
+                        android:textColor="@color/cobalt"
+                        app:backgroundTint="@color/white"
+                        app:cornerRadius="10dp"
+                        app:strokeColor="@color/cobalt"
+                        app:strokeWidth="1dp"
+                        app:icon="@android:drawable/ic_menu_send"
+                        app:iconTint="@color/cobalt"
+                        app:iconSize="14dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <!-- Spacing -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+
+            <!-- ===== SHARE & PROMOTE SECTION ===== -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Share &amp; Promote"
+                android:textColor="@color/navy"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp"
+                android:paddingHorizontal="4dp" />
+
+            <!-- Share our Instagram -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/background_card"
+                android:layout_marginBottom="10dp">
+
+                <LinearLayout
+                    android:id="@+id/btnShareOurInstagram"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical"
+                    android:background="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:src="@drawable/ic_social_instagram"
+                        android:scaleType="fitCenter"
+                        android:contentDescription="Instagram" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="14dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Share our Instagram"
+                            android:textColor="@color/text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Invite friends to follow us"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            android:layout_marginTop="2dp" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@android:drawable/ic_menu_share"
+                        app:tint="@color/cobalt"
+                        android:contentDescription="Share" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Share an Event -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/background_card"
+                android:layout_marginBottom="10dp">
+
+                <LinearLayout
+                    android:id="@+id/btnShareEvent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical"
+                    android:background="?attr/selectableItemBackground">
+
+                    <View
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/social_icon_circle" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="14dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Share an Event"
+                            android:textColor="@color/text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Spread the word about upcoming events"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            android:layout_marginTop="2dp" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@android:drawable/ic_menu_share"
+                        app:tint="@color/cobalt"
+                        android:contentDescription="Share" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Spacing -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+
+            <!-- ===== NATIONAL FBLA SECTION ===== -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -63,7 +479,8 @@
                 android:textColor="@color/navy"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="12dp"
+                android:paddingHorizontal="4dp" />
 
             <!-- Facebook -->
             <com.google.android.material.card.MaterialCardView
@@ -83,10 +500,12 @@
                     android:gravity="center_vertical"
                     android:background="?attr/selectableItemBackground">
 
-                    <View
+                    <ImageView
                         android:layout_width="44dp"
                         android:layout_height="44dp"
-                        android:background="@drawable/social_facebook_bg" />
+                        android:src="@drawable/ic_social_facebook"
+                        android:scaleType="fitCenter"
+                        android:contentDescription="Facebook" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -123,65 +542,7 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Twitter/X -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
-                app:cardBackgroundColor="@color/background_card"
-                android:layout_marginBottom="10dp">
-
-                <LinearLayout
-                    android:id="@+id/btnTwitter"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical"
-                    android:background="?attr/selectableItemBackground">
-
-                    <View
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:background="@drawable/social_twitter_bg" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginStart="14dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="X (Twitter)"
-                            android:textColor="@color/text_primary"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="\@FBLA"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="13sp" />
-
-                    </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@android:drawable/ic_menu_send"
-                        app:tint="@color/cobalt"
-                        android:contentDescription="Open" />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Instagram -->
+            <!-- Instagram (National) -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -199,10 +560,12 @@
                     android:gravity="center_vertical"
                     android:background="?attr/selectableItemBackground">
 
-                    <View
+                    <ImageView
                         android:layout_width="44dp"
                         android:layout_height="44dp"
-                        android:background="@drawable/social_instagram_bg" />
+                        android:src="@drawable/ic_social_instagram"
+                        android:scaleType="fitCenter"
+                        android:contentDescription="Instagram" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -239,122 +602,6 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- LinkedIn -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
-                app:cardBackgroundColor="@color/background_card"
-                android:layout_marginBottom="10dp">
-
-                <LinearLayout
-                    android:id="@+id/btnLinkedIn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical"
-                    android:background="?attr/selectableItemBackground">
-
-                    <View
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:background="@drawable/social_linkedin_bg" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginStart="14dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="LinkedIn"
-                            android:textColor="@color/text_primary"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="FBLA-PBL"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="13sp" />
-
-                    </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@android:drawable/ic_menu_send"
-                        app:tint="@color/cobalt"
-                        android:contentDescription="Open" />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- YouTube -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
-                app:cardBackgroundColor="@color/background_card"
-                android:layout_marginBottom="10dp">
-
-                <LinearLayout
-                    android:id="@+id/btnYouTube"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical"
-                    android:background="?attr/selectableItemBackground">
-
-                    <View
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:background="@drawable/social_youtube_bg" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginStart="14dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="YouTube"
-                            android:textColor="@color/text_primary"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="FBLA-PBL"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="13sp" />
-
-                    </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@android:drawable/ic_menu_send"
-                        app:tint="@color/cobalt"
-                        android:contentDescription="Open" />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
             <!-- FBLA Website - Featured Card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -362,7 +609,8 @@
                 app:cardCornerRadius="16dp"
                 app:cardElevation="4dp"
                 app:cardBackgroundColor="@color/navy"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp">
 
                 <LinearLayout
                     android:id="@+id/btnWebsite"
