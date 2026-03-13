@@ -40,4 +40,7 @@
     <!-- Bottom Nav -->
     <color name="nav_bg">#FFFFFF</color>
     <color name="nav_indicator">#E8EDF2</color>
+
+    <!-- Post bar -->
+    <color name="brown_dark">#3E2723</color>
 </resources>

@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/background_primary"
     tools:context=".HomeActivity">
 
     <LinearLayout
@@ -49,6 +49,21 @@
 
             </LinearLayout>
 
+            <!-- Role badge (visible for all users to show current role) -->
+            <TextView
+                android:id="@+id/textRoleBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:text="MEMBER"
+                android:textColor="@color/navy"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:background="@drawable/officer_badge_background"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone" />
+
         </LinearLayout>
 
         <!-- Section Label -->
@@ -63,13 +78,40 @@
             android:paddingTop="16dp"
             android:paddingBottom="8dp" />
 
-        <!-- Content Area -->
+        <!-- Content Area: background logo + announcements on top -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <!-- Empty State -->
+            <!-- Background watermark logo (centered, faded) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:src="@drawable/ic_book_coffee"
+                    android:alpha="0.10"
+                    android:contentDescription="FBLA Connect watermark" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="FBLA Connect"
+                    android:textColor="@color/navy"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:fontFamily="serif"
+                    android:alpha="0.10"
+                    android:layout_marginTop="8dp" />
+
+            </LinearLayout>
+
+            <!-- Empty State (shown when no announcements) -->
             <LinearLayout
                 android:id="@+id/layoutEmpty"
                 android:layout_width="match_parent"
@@ -107,7 +149,7 @@
 
             </LinearLayout>
 
-            <!-- Announcements RecyclerView -->
+            <!-- Announcements RecyclerView (in front of background logo) -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerAnnouncements"
                 android:layout_width="match_parent"
@@ -120,6 +162,35 @@
 
         </FrameLayout>
 
+        <!-- Pill-shaped Post button (officers only, centered above nav) -->
+        <FrameLayout
+            android:id="@+id/pillContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:paddingTop="8dp"
+            android:paddingHorizontal="32dp">
+
+            <TextView
+                android:id="@+id/btnPostPill"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/bg_pill_button"
+                android:gravity="center_vertical"
+                android:paddingStart="24dp"
+                android:paddingEnd="16dp"
+                android:text="Post an announcement"
+                android:textColor="#80FFFFFF"
+                android:textSize="15sp"
+                android:drawableEnd="@drawable/ic_arrow_up_circle"
+                android:clickable="true"
+                android:focusable="true"
+                android:visibility="gone"
+                android:contentDescription="Post Announcement" />
+
+        </FrameLayout>
+
         <!-- Bottom Navigation -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigation"
@@ -129,23 +200,42 @@
             android:elevation="8dp"
             app:itemIconTint="@drawable/nav_item_color"
             app:itemTextColor="@drawable/nav_item_color"
+            app:itemRippleColor="@color/nav_ripple_color"
             app:menu="@menu/bottom_navigation"
             app:labelVisibilityMode="labeled" />
 
     </LinearLayout>
 
-    <!-- Add Announcement FAB -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddAnnouncement"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="76dp"
-        android:src="@android:drawable/ic_input_add"
+    <!-- Inline Announcement Panel (overlay, initially hidden) -->
+    <FrameLayout
+        android:id="@+id/overlayDim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#66000000"
         android:visibility="gone"
-        app:backgroundTint="@color/fbla_gold"
-        app:tint="@color/navy"
-        android:contentDescription="Add Announcement" />
+        android:clickable="true"
+        android:focusable="true">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/inlineAnnouncementPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="16dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="12dp"
+            app:cardBackgroundColor="@color/background_card">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include layout="@layout/dialog_add_announcement" />
+
+            </ScrollView>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

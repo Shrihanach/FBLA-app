@@ -1,21 +1,29 @@
 package com.example.fblaapp;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.card.MaterialCardView;
 
 import com.example.fblaapp.data.AuthRepository;
 import com.example.fblaapp.data.EventEntity;
 import com.example.fblaapp.data.EventRepository;
 import com.example.fblaapp.data.UserEntity;
-import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -24,9 +32,9 @@ import com.example.fblaapp.utils.AppExecutors;
 
 public class AddEditEventActivity extends AppCompatActivity {
 
-    private TextInputEditText editTitle;
-    private TextInputEditText editDescription;
-    private TextInputEditText editLocation;
+    private EditText editTitle;
+    private EditText editDescription;
+    private EditText editLocation;
     private TextView textStartDate;
     private TextView textStartTime;
     private TextView textEndDate;
@@ -35,14 +43,21 @@ public class AddEditEventActivity extends AppCompatActivity {
     private TextView textTitle;
     private Button btnSave;
     private ImageButton btnBack;
+    private TextView btnAddTime;
+    private LinearLayout layoutTimeRow;
+    private MaterialCardView cardContainer;
+    private FrameLayout rootFrame;
 
     private EventRepository eventRepository;
 
     private Calendar startCalendar;
     private Calendar endCalendar;
 
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM d, yyyy", Locale.US);
+    private final SimpleDateFormat dateFormatShort = new SimpleDateFormat("EEEE, MMMM d", Locale.US);
+    private final SimpleDateFormat dateFormatFull = new SimpleDateFormat("EEE, MMM d, yyyy", Locale.US);
     private final SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm a", Locale.US);
+
+    private boolean timeVisible = false;
 
     // Edit mode fields
     private boolean isEditMode = false;
@@ -90,6 +105,61 @@ public class AddEditEventActivity extends AppCompatActivity {
 
         // Setup click listeners
         setupClickListeners();
+
+        // Use OnBackPressedDispatcher for back gestures
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                finish();
+            }
+        });
+
+        // If editing, show the time row since existing events have times
+        if (isEditMode) {
+            showTimeRow();
+        }
+
+        // Animate card in
+        animateCardIn();
+    }
+
+    private void animateCardIn() {
+        cardContainer.post(() -> {
+            cardContainer.setTranslationY(cardContainer.getHeight());
+            cardContainer.setAlpha(0f);
+            cardContainer.setScaleX(0.9f);
+            cardContainer.setScaleY(0.9f);
+
+            AnimatorSet set = new AnimatorSet();
+            set.playTogether(
+                ObjectAnimator.ofFloat(cardContainer, "translationY", cardContainer.getHeight(), 0f),
+                ObjectAnimator.ofFloat(cardContainer, "alpha", 0f, 1f),
+                ObjectAnimator.ofFloat(cardContainer, "scaleX", 0.9f, 1f),
+                ObjectAnimator.ofFloat(cardContainer, "scaleY", 0.9f, 1f)
+            );
+            set.setDuration(300);
+            set.setInterpolator(new DecelerateInterpolator(1.5f));
+            set.start();
+        });
+    }
+
+    private void animateCardOut(Runnable onEnd) {
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(
+            ObjectAnimator.ofFloat(cardContainer, "translationY", 0f, cardContainer.getHeight()),
+            ObjectAnimator.ofFloat(cardContainer, "alpha", 1f, 0f),
+            ObjectAnimator.ofFloat(cardContainer, "scaleX", 1f, 0.9f),
+            ObjectAnimator.ofFloat(cardContainer, "scaleY", 1f, 0.9f)
+        );
+        set.setDuration(250);
+        set.setInterpolator(new android.view.animation.AccelerateInterpolator(1.5f));
+        set.addListener(new android.animation.AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(android.animation.Animator animation) {
+                onEnd.run();
+            }
+        });
+        set.start();
     }
 
     private void initViews() {
@@ -104,6 +174,16 @@ public class AddEditEventActivity extends AppCompatActivity {
         textTitle = findViewById(R.id.textTitle);
         btnSave = findViewById(R.id.btnSave);
         btnBack = findViewById(R.id.btnBack);
+        btnAddTime = findViewById(R.id.btnAddTime);
+        layoutTimeRow = findViewById(R.id.layoutTimeRow);
+        cardContainer = findViewById(R.id.cardContainer);
+        rootFrame = findViewById(R.id.main);
+
+        // Dismiss when tapping outside the card
+        rootFrame.setOnClickListener(v -> finish());
+        cardContainer.setOnClickListener(v -> {
+            // consume click so it doesn't dismiss
+        });
     }
 
     private void loadEventData() {
@@ -123,6 +203,15 @@ public class AddEditEventActivity extends AppCompatActivity {
 
     private void setupClickListeners() {
         btnBack.setOnClickListener(v -> finish());
+
+        // Add time button
+        btnAddTime.setOnClickListener(v -> {
+            if (!timeVisible) {
+                showTimeRow();
+            } else {
+                hideTimeRow();
+            }
+        });
 
         // Start date picker
         textStartDate.setOnClickListener(v -> showDatePicker(startCalendar, () -> {
@@ -151,6 +240,18 @@ public class AddEditEventActivity extends AppCompatActivity {
 
         // Save button
         btnSave.setOnClickListener(v -> saveEvent());
+    }
+
+    private void showTimeRow() {
+        timeVisible = true;
+        layoutTimeRow.setVisibility(View.VISIBLE);
+        btnAddTime.setText("Remove time");
+    }
+
+    private void hideTimeRow() {
+        timeVisible = false;
+        layoutTimeRow.setVisibility(View.GONE);
+        btnAddTime.setText("Add time");
     }
 
     private void showDatePicker(Calendar calendar, Runnable onDateSet) {
@@ -185,9 +286,9 @@ public class AddEditEventActivity extends AppCompatActivity {
     }
 
     private void updateDateTimeDisplay() {
-        textStartDate.setText(dateFormat.format(startCalendar.getTime()));
+        textStartDate.setText(dateFormatShort.format(startCalendar.getTime()));
+        textEndDate.setText(dateFormatShort.format(endCalendar.getTime()));
         textStartTime.setText(timeFormat.format(startCalendar.getTime()));
-        textEndDate.setText(dateFormat.format(endCalendar.getTime()));
         textEndTime.setText(timeFormat.format(endCalendar.getTime()));
     }
 
@@ -267,4 +368,18 @@ public class AddEditEventActivity extends AppCompatActivity {
     private void hideError() {
         textError.setVisibility(View.GONE);
     }
+
+    private boolean isFinishing = false;
+
+    @Override
+    public void finish() {
+        if (!isFinishing) {
+            isFinishing = true;
+            animateCardOut(() -> {
+                super.finish();
+                overridePendingTransition(0, 0);
+            });
+        }
+    }
+
 }

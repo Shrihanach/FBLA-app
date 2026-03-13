@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+
+    <!-- Open book (left page) -->
+    <path
+        android:pathData="M18,85 L18,40 C18,38 19,36 21,35 Q38,28 58,35 L58,82 Q38,75 21,82 C19,83 18,84 18,85Z"
+        android:fillColor="@color/navy"
+        android:fillAlpha="0.9" />
+
+    <!-- Open book (right page) -->
+    <path
+        android:pathData="M102,85 L102,40 C102,38 101,36 99,35 Q82,28 62,35 L62,82 Q82,75 99,82 C101,83 102,84 102,85Z"
+        android:fillColor="@color/navy"
+        android:fillAlpha="0.9" />
+
+    <!-- Book spine/center line -->
+    <path
+        android:pathData="M58,35 L58,82 L62,82 L62,35Z"
+        android:fillColor="@color/navy" />
+
+    <!-- Coffee cup body -->
+    <path
+        android:pathData="M44,52 L44,70 C44,74 48,78 60,78 C72,78 76,74 76,70 L76,52Z"
+        android:fillColor="@color/fbla_gold" />
+
+    <!-- Coffee cup rim -->
+    <path
+        android:pathData="M42,50 L78,50 L78,54 L42,54Z"
+        android:fillColor="@color/fbla_gold_light" />
+
+    <!-- Cup handle -->
+    <path
+        android:pathData="M76,56 Q86,56 86,64 Q86,72 76,72"
+        android:strokeColor="@color/fbla_gold"
+        android:strokeWidth="3.5"
+        android:fillColor="#00000000" />
+
+    <!-- Steam line 1 (left) -->
+    <path
+        android:pathData="M50,46 Q48,40 50,34 Q52,28 50,22"
+        android:strokeColor="@color/nav_unselected"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Steam line 2 (center) -->
+    <path
+        android:pathData="M60,46 Q58,38 60,32 Q62,26 60,18"
+        android:strokeColor="@color/nav_unselected"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Steam line 3 (right) -->
+    <path
+        android:pathData="M70,46 Q68,40 70,34 Q72,28 70,22"
+        android:strokeColor="@color/nav_unselected"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+</vector>

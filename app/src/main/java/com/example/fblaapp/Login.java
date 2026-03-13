@@ -24,6 +24,7 @@ public class Login extends AppCompatActivity {
 
     private TextInputEditText editTextEmail, editTextPassword;
     private Button buttonLogin;
+    private Button btnDemoOfficer, btnDemoMember, btnDemoTeacher;
     private ProgressBar progressBar;
     private TextView textViewRegister;
     private AuthRepository authRepository;
@@ -63,6 +64,9 @@ public class Login extends AppCompatActivity {
         buttonLogin = findViewById(R.id.btn_login);
         progressBar = findViewById(R.id.progressBar);
         textViewRegister = findViewById(R.id.registerNow);
+        btnDemoOfficer = findViewById(R.id.btnDemoOfficer);
+        btnDemoMember = findViewById(R.id.btnDemoMember);
+        btnDemoTeacher = findViewById(R.id.btnDemoTeacher);
     }
 
     private void setupListeners() {
@@ -75,6 +79,27 @@ public class Login extends AppCompatActivity {
 
         // Login button click
         buttonLogin.setOnClickListener(v -> attemptLogin());
+
+        // Demo account quick-login buttons
+        btnDemoOfficer.setOnClickListener(v -> loginWithDemo("officer@fbla.org", "officer123"));
+        btnDemoMember.setOnClickListener(v -> loginWithDemo("member@fbla.org", "member123"));
+        btnDemoTeacher.setOnClickListener(v -> loginWithDemo("teacher@fbla.org", "teacher123"));
+    }
+
+    private void loginWithDemo(String email, String password) {
+        progressBar.setVisibility(View.VISIBLE);
+
+        UserEntity user = authRepository.login(email, password);
+
+        progressBar.setVisibility(View.GONE);
+
+        if (user != null) {
+            Toast.makeText(this, "Welcome, " + user.getName() + " (" + user.getRoleDisplayName() + ")",
+                    Toast.LENGTH_SHORT).show();
+            navigateToHome();
+        } else {
+            Toast.makeText(this, "Demo account error. Please try again.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void attemptLogin() {

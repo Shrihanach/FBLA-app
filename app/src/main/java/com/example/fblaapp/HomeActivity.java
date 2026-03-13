@@ -1,5 +1,9 @@
 package com.example.fblaapp;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,16 +17,23 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.card.MaterialCardView;
+
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
@@ -37,7 +48,6 @@ import com.example.fblaapp.data.AuthRepository;
 import com.example.fblaapp.data.UserEntity;
 import com.example.fblaapp.utils.AppExecutors;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONArray;
@@ -55,9 +65,12 @@ public class HomeActivity extends AppCompatActivity {
 
     private static final int INITIAL_LOAD_COUNT = 5;
 
+    private static final String TAG = "HomeActivity";
+
     private RecyclerView recyclerAnnouncements;
     private BottomNavigationView bottomNavigation;
-    private FloatingActionButton fabAddAnnouncement;
+    private TextView btnPostPill;
+    private TextView textRoleBadge;
     private LinearLayout layoutEmpty;
     private TextView textEmptyHint;
     private TextView textRoleInfo;
@@ -70,6 +83,12 @@ public class HomeActivity extends AppCompatActivity {
 
     private List<AnnouncementEntity> allAnnouncements = new ArrayList<>();
     private int currentDisplayCount = INITIAL_LOAD_COUNT;
+
+    // ── Inline announcement panel ──
+    private FrameLayout overlayDim;
+    private MaterialCardView inlineAnnouncementPanel;
+    private boolean isPanelOpen = false;
+    private View editSourceView = null;  // the announcement card being edited
 
     // ── Attachment state (shared across add / edit dialog) ──
     private JSONObject pendingAttachments;
@@ -103,7 +122,20 @@ public class HomeActivity extends AppCompatActivity {
         setupBottomNavigation();
         loadAnnouncements();
 
-        fabAddAnnouncement.setOnClickListener(v -> showAddAnnouncementDialog());
+        btnPostPill.setOnClickListener(v -> showAddAnnouncementDialog());
+
+        // Handle system back using OnBackPressedDispatcher
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (isPanelOpen) {
+                    hideInlinePanel();
+                } else {
+                    // Default behavior: close this activity
+                    finish();
+                }
+            }
+        });
     }
 
     // ==================== Activity Result Launchers ====================
@@ -139,10 +171,15 @@ public class HomeActivity extends AppCompatActivity {
     private void initViews() {
         recyclerAnnouncements = findViewById(R.id.recyclerAnnouncements);
         bottomNavigation = findViewById(R.id.bottomNavigation);
-        fabAddAnnouncement = findViewById(R.id.fabAddAnnouncement);
+        btnPostPill = findViewById(R.id.btnPostPill);
+        textRoleBadge = findViewById(R.id.textRoleBadge);
         layoutEmpty = findViewById(R.id.layoutEmpty);
         textEmptyHint = findViewById(R.id.textEmptyHint);
         textRoleInfo = findViewById(R.id.textRoleInfo);
+
+        // Inline announcement panel
+        overlayDim = findViewById(R.id.overlayDim);
+        inlineAnnouncementPanel = findViewById(R.id.inlineAnnouncementPanel);
     }
 
     private void setupUserRole() {
@@ -151,13 +188,26 @@ public class HomeActivity extends AppCompatActivity {
             isOfficer = currentUser.isOfficer();
             currentUserId = currentUser.getId();
 
+            String role = currentUser.getRole();
+            String displayRole = currentUser.getRoleDisplayName();
+
+            Log.d(TAG, "Current user: " + currentUser.getEmail()
+                    + ", role=" + role + ", isOfficer=" + isOfficer);
+
+            // Show role badge for all users
+            textRoleBadge.setText(displayRole.toUpperCase());
+            textRoleBadge.setVisibility(View.VISIBLE);
+
             if (isOfficer) {
-                fabAddAnnouncement.setVisibility(View.VISIBLE);
-                textRoleInfo.setText("Officer - Post announcements");
+                btnPostPill.setVisibility(View.VISIBLE);
+                textRoleInfo.setText(displayRole + " - Post announcements");
             } else {
-                fabAddAnnouncement.setVisibility(View.GONE);
+                btnPostPill.setVisibility(View.GONE);
                 textRoleInfo.setText("Announcements");
             }
+        } else {
+            Log.w(TAG, "setupUserRole: currentUser is NULL — redirecting to login");
+            navigateToLogin();
         }
     }
 
@@ -167,8 +217,8 @@ public class HomeActivity extends AppCompatActivity {
         adapter.setCurrentUserId(currentUserId);
         adapter.setOnAnnouncementClickListener(new AnnouncementsAdapter.OnAnnouncementClickListener() {
             @Override
-            public void onEditClick(AnnouncementEntity announcement) {
-                showEditAnnouncementDialog(announcement);
+            public void onEditClick(AnnouncementEntity announcement, View itemView) {
+                showEditAnnouncementInline(announcement, itemView);
             }
 
             @Override
@@ -231,34 +281,33 @@ public class HomeActivity extends AppCompatActivity {
     // ==================== Add / Edit Dialogs ====================
 
     private void showAddAnnouncementDialog() {
+        editSourceView = null;  // new post, not editing
         pendingAttachments = new JSONObject();
 
-        Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_add_announcement);
-        dialog.getWindow().setLayout(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-
-        activeDialog = dialog;
-
-        TextView dialogTitle = dialog.findViewById(R.id.dialogTitle);
+        // Reset the inline panel form
+        TextView dialogTitle = inlineAnnouncementPanel.findViewById(R.id.dialogTitle);
         dialogTitle.setText("New Announcement");
 
-        TextInputEditText editTitle = dialog.findViewById(R.id.editTitle);
-        TextInputEditText editContent = dialog.findViewById(R.id.editContent);
-        Button btnCancel = dialog.findViewById(R.id.btnCancel);
-        Button btnPost = dialog.findViewById(R.id.btnPost);
+        TextInputEditText editTitle = inlineAnnouncementPanel.findViewById(R.id.editTitle);
+        TextInputEditText editContent = inlineAnnouncementPanel.findViewById(R.id.editContent);
+        Button btnCancel = inlineAnnouncementPanel.findViewById(R.id.btnCancel);
+        Button btnPost = inlineAnnouncementPanel.findViewById(R.id.btnPost);
 
-        activeChipsContainer = dialog.findViewById(R.id.layoutAttachmentChips);
+        // Clear previous content
+        editTitle.setText("");
+        editContent.setText("");
+        btnPost.setText("Post");
 
-        // Setup formatting toolbar
-        setupFormattingToolbar(dialog, editContent);
-        // Setup attachment bar
-        setupAttachmentBar(dialog);
+        activeChipsContainer = inlineAnnouncementPanel.findViewById(R.id.layoutAttachmentChips);
+        activeChipsContainer.removeAllViews();
+        activeChipsContainer.setVisibility(View.GONE);
 
-        btnCancel.setOnClickListener(v -> dialog.dismiss());
+        // Setup formatting toolbar using the inline panel view
+        setupFormattingToolbarInline(inlineAnnouncementPanel, editContent);
+        // Setup attachment bar using the inline panel view
+        setupAttachmentBarInline(inlineAnnouncementPanel);
+
+        btnCancel.setOnClickListener(v -> hideInlinePanel());
 
         btnPost.setOnClickListener(v -> {
             String title = editTitle.getText() != null ? editTitle.getText().toString().trim() : "";
@@ -277,13 +326,316 @@ public class HomeActivity extends AppCompatActivity {
             }
 
             String attachJson = pendingAttachments.length() > 0 ? pendingAttachments.toString() : null;
-            postAnnouncement(title, htmlContent, attachJson, dialog);
+            postAnnouncementInline(title, htmlContent, attachJson);
         });
 
-        dialog.show();
+        // Animate the panel open
+        showInlinePanel();
     }
 
-    private void showEditAnnouncementDialog(AnnouncementEntity announcement) {
+    // ==================== Inline Panel Morph Animation ====================
+
+    private void showInlinePanel() {
+        if (isPanelOpen) return;
+        isPanelOpen = true;
+
+        // Capture pill position in overlay coordinate space
+        int[] pillLoc = new int[2];
+        btnPostPill.getLocationInWindow(pillLoc);
+        int[] overlayLoc = new int[2];
+        overlayDim.getLocationInWindow(overlayLoc);
+
+        final float pillX = pillLoc[0] - overlayLoc[0];
+        final float pillY = pillLoc[1] - overlayLoc[1];
+        final float pillW = btnPostPill.getWidth();
+        final float pillH = btnPostPill.getHeight();
+
+        // Show overlay transparent, hide pill, show panel
+        overlayDim.setVisibility(View.VISIBLE);
+        overlayDim.setAlpha(0f);
+        btnPostPill.setVisibility(View.INVISIBLE);
+
+        // Hide form content so we can fade it in
+        View formContent = ((android.view.ViewGroup) inlineAnnouncementPanel).getChildAt(0);
+        formContent.setAlpha(0f);
+        inlineAnnouncementPanel.setVisibility(View.VISIBLE);
+
+        inlineAnnouncementPanel.post(() -> {
+            // Final panel bounds
+            int[] panelLoc = new int[2];
+            inlineAnnouncementPanel.getLocationInWindow(panelLoc);
+            float finalW = inlineAnnouncementPanel.getWidth();
+            float finalH = inlineAnnouncementPanel.getHeight();
+            float finalX = panelLoc[0] - overlayLoc[0];
+            float finalY = panelLoc[1] - overlayLoc[1];
+
+            float scaleX = pillW / finalW;
+            float scaleY = pillH / finalH;
+
+            // Pivot at center so it expands outward from the pill
+            inlineAnnouncementPanel.setPivotX(finalW / 2f);
+            inlineAnnouncementPanel.setPivotY(finalH / 2f);
+
+            // Translate so the panel's center aligns with the pill's center
+            float pillCenterX = pillX + pillW / 2f;
+            float pillCenterY = pillY + pillH / 2f;
+            float panelCenterX = finalX + finalW / 2f;
+            float panelCenterY = finalY + finalH / 2f;
+            float startTX = pillCenterX - panelCenterX;
+            float startTY = pillCenterY - panelCenterY;
+
+            inlineAnnouncementPanel.setScaleX(scaleX);
+            inlineAnnouncementPanel.setScaleY(scaleY);
+            inlineAnnouncementPanel.setTranslationX(startTX);
+            inlineAnnouncementPanel.setTranslationY(startTY);
+
+            // Start with pill-shaped corners, morph to card corners
+            float density = getResources().getDisplayMetrics().density;
+            float pillRadius = 100f * density;
+            float cardRadius = 24f * density;
+            inlineAnnouncementPanel.setRadius(pillRadius);
+
+            // Animate morph
+            ObjectAnimator dimFade = ObjectAnimator.ofFloat(overlayDim, "alpha", 0f, 1f);
+            ObjectAnimator aSX = ObjectAnimator.ofFloat(inlineAnnouncementPanel, "scaleX", scaleX, 1f);
+            ObjectAnimator aSY = ObjectAnimator.ofFloat(inlineAnnouncementPanel, "scaleY", scaleY, 1f);
+            ObjectAnimator aTX = ObjectAnimator.ofFloat(inlineAnnouncementPanel, "translationX", startTX, 0f);
+            ObjectAnimator aTY = ObjectAnimator.ofFloat(inlineAnnouncementPanel, "translationY", startTY, 0f);
+            ObjectAnimator aRad = ObjectAnimator.ofFloat(inlineAnnouncementPanel, "radius", pillRadius, cardRadius);
+
+            // Fade in form content with a slight delay so it appears as the card expands
+            ObjectAnimator contentFade = ObjectAnimator.ofFloat(formContent, "alpha", 0f, 1f);
+            contentFade.setStartDelay(120);
+
+            AnimatorSet set = new AnimatorSet();
+            set.playTogether(dimFade, aSX, aSY, aTX, aTY, aRad, contentFade);
+            set.setDuration(350);
+            set.setInterpolator(new DecelerateInterpolator(2f));
+            set.start();
+        });
+
+        overlayDim.setOnClickListener(v -> hideInlinePanel());
+    }
+
+    private void showInlinePanelFromCard(View sourceCard) {
+        if (isPanelOpen) return;
+        isPanelOpen = true;
+
+        // Get source card position
+        int[] cardLoc = new int[2];
+        sourceCard.getLocationInWindow(cardLoc);
+        int[] overlayLoc = new int[2];
+        overlayDim.getLocationInWindow(overlayLoc);
+
+        // If overlay isn't visible yet, use window coordinates directly
+        overlayDim.setVisibility(View.VISIBLE);
+        overlayDim.setAlpha(0f);
+
+        final float cardX = cardLoc[0];
+        final float cardY = cardLoc[1];
+        final float cardW = sourceCard.getWidth();
+        final float cardH = sourceCard.getHeight();
+
+        // Fade the source card out
+        sourceCard.setAlpha(0.3f);
+
+        // Show panel
+        View formContent = ((android.view.ViewGroup) inlineAnnouncementPanel).getChildAt(0);
+        formContent.setAlpha(0f);
+        inlineAnnouncementPanel.setVisibility(View.VISIBLE);
+
+        inlineAnnouncementPanel.post(() -> {
+            int[] panelLoc = new int[2];
+            inlineAnnouncementPanel.getLocationInWindow(panelLoc);
+            float finalW = inlineAnnouncementPanel.getWidth();
+            float finalH = inlineAnnouncementPanel.getHeight();
+            float finalX = panelLoc[0];
+            float finalY = panelLoc[1];
+
+            float scaleX = cardW / finalW;
+            float scaleY = cardH / finalH;
+
+            inlineAnnouncementPanel.setPivotX(finalW / 2f);
+            inlineAnnouncementPanel.setPivotY(finalH / 2f);
+
+            // Center the panel on the source card, then animate to its final pos (slightly below)
+            float cardCenterX = cardX + cardW / 2f;
+            float cardCenterY = cardY + cardH / 2f;
+            float panelCenterX = finalX + finalW / 2f;
+            float panelCenterY = finalY + finalH / 2f;
+            float startTX = cardCenterX - panelCenterX;
+            float startTY = cardCenterY - panelCenterY;
+
+            // Offset the final position slightly below the card
+            float density = getResources().getDisplayMetrics().density;
+            float offsetDown = 16f * density;
+
+            inlineAnnouncementPanel.setScaleX(scaleX);
+            inlineAnnouncementPanel.setScaleY(scaleY);
+            inlineAnnouncementPanel.setTranslationX(startTX);
+            inlineAnnouncementPanel.setTranslationY(startTY);
+
+            float cardRadius = 24f * density;
+            float sourceRadius = 16f * density;
+            inlineAnnouncementPanel.setRadius(sourceRadius);
+
+            AnimatorSet set = new AnimatorSet();
+            set.playTogether(
+                ObjectAnimator.ofFloat(overlayDim, "alpha", 0f, 1f),
+                ObjectAnimator.ofFloat(inlineAnnouncementPanel, "scaleX", scaleX, 1f),
+                ObjectAnimator.ofFloat(inlineAnnouncementPanel, "scaleY", scaleY, 1f),
+                ObjectAnimator.ofFloat(inlineAnnouncementPanel, "translationX", startTX, 0f),
+                ObjectAnimator.ofFloat(inlineAnnouncementPanel, "translationY", startTY, offsetDown),
+                ObjectAnimator.ofFloat(inlineAnnouncementPanel, "radius", sourceRadius, cardRadius),
+                ObjectAnimator.ofFloat(formContent, "alpha", 0f, 1f)
+            );
+            set.setDuration(350);
+            set.setInterpolator(new DecelerateInterpolator(2f));
+            set.start();
+        });
+
+        overlayDim.setOnClickListener(v -> hideInlinePanel());
+    }
+
+    private void hideInlinePanel() {
+        if (!isPanelOpen) return;
+        isPanelOpen = false;
+
+        float density = getResources().getDisplayMetrics().density;
+        float cardRadius = 24f * density;
+
+        View formContent = ((android.view.ViewGroup) inlineAnnouncementPanel).getChildAt(0);
+
+        if (editSourceView != null) {
+            // Morph back to the source announcement card
+            int[] cardLoc = new int[2];
+            editSourceView.getLocationInWindow(cardLoc);
+
+            int[] panelLoc = new int[2];
+            inlineAnnouncementPanel.getLocationInWindow(panelLoc);
+            float finalW = inlineAnnouncementPanel.getWidth();
+            float finalH = inlineAnnouncementPanel.getHeight();
+            float finalX = panelLoc[0];
+            float finalY = panelLoc[1];
+
+            float cardW = editSourceView.getWidth();
+            float cardH = editSourceView.getHeight();
+            float scaleX = cardW / finalW;
+            float scaleY = cardH / finalH;
+
+            float cardCenterX = cardLoc[0] + cardW / 2f;
+            float cardCenterY = cardLoc[1] + cardH / 2f;
+            float panelCenterX = finalX + finalW / 2f;
+            float panelCenterY = finalY + finalH / 2f;
+            float endTX = cardCenterX - panelCenterX;
+            float endTY = cardCenterY - panelCenterY;
+
+            float sourceRadius = 16f * density;
+
+            ObjectAnimator contentFade = ObjectAnimator.ofFloat(formContent, "alpha", 1f, 0f);
+            contentFade.setDuration(100);
+
+            AnimatorSet morphBack = new AnimatorSet();
+            morphBack.playTogether(
+                ObjectAnimator.ofFloat(overlayDim, "alpha", 1f, 0f),
+                ObjectAnimator.ofFloat(inlineAnnouncementPanel, "scaleX", 1f, scaleX),
+                ObjectAnimator.ofFloat(inlineAnnouncementPanel, "scaleY", 1f, scaleY),
+                ObjectAnimator.ofFloat(inlineAnnouncementPanel, "translationX", inlineAnnouncementPanel.getTranslationX(), endTX),
+                ObjectAnimator.ofFloat(inlineAnnouncementPanel, "translationY", inlineAnnouncementPanel.getTranslationY(), endTY),
+                ObjectAnimator.ofFloat(inlineAnnouncementPanel, "radius", cardRadius, sourceRadius)
+            );
+            morphBack.setDuration(280);
+            morphBack.setInterpolator(new AccelerateInterpolator(1.5f));
+
+            final View srcView = editSourceView;
+            AnimatorSet fullSet = new AnimatorSet();
+            fullSet.playSequentially(contentFade, morphBack);
+            fullSet.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    overlayDim.setVisibility(View.GONE);
+                    inlineAnnouncementPanel.setVisibility(View.INVISIBLE);
+                    inlineAnnouncementPanel.setScaleX(1f);
+                    inlineAnnouncementPanel.setScaleY(1f);
+                    inlineAnnouncementPanel.setTranslationX(0f);
+                    inlineAnnouncementPanel.setTranslationY(0f);
+                    inlineAnnouncementPanel.setRadius(cardRadius);
+                    formContent.setAlpha(1f);
+                    srcView.setAlpha(1f);
+                    editSourceView = null;
+                    if (btnPostPill.getVisibility() != View.VISIBLE && isOfficer) {
+                        btnPostPill.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+            fullSet.start();
+        } else {
+            // Morph back to pill (original new-post flow)
+            int[] pillLoc = new int[2];
+            btnPostPill.getLocationInWindow(pillLoc);
+            int[] overlayLocArr = new int[2];
+            overlayDim.getLocationInWindow(overlayLocArr);
+
+            float pillX = pillLoc[0] - overlayLocArr[0];
+            float pillY = pillLoc[1] - overlayLocArr[1];
+            float pillW = btnPostPill.getWidth();
+            float pillH = btnPostPill.getHeight();
+
+            int[] panelLoc = new int[2];
+            inlineAnnouncementPanel.getLocationInWindow(panelLoc);
+            float finalW = inlineAnnouncementPanel.getWidth();
+            float finalH = inlineAnnouncementPanel.getHeight();
+            float finalX = panelLoc[0] - overlayLocArr[0];
+            float finalY = panelLoc[1] - overlayLocArr[1];
+
+            float scaleX = pillW / finalW;
+            float scaleY = pillH / finalH;
+
+            float pillCenterX = pillX + pillW / 2f;
+            float pillCenterY = pillY + pillH / 2f;
+            float panelCenterX = finalX + finalW / 2f;
+            float panelCenterY = finalY + finalH / 2f;
+            float endTX = pillCenterX - panelCenterX;
+            float endTY = pillCenterY - panelCenterY;
+
+            float pillRadius = 100f * density;
+
+            ObjectAnimator contentFade = ObjectAnimator.ofFloat(formContent, "alpha", 1f, 0f);
+            contentFade.setDuration(100);
+
+            AnimatorSet morphBack = new AnimatorSet();
+            morphBack.playTogether(
+                ObjectAnimator.ofFloat(overlayDim, "alpha", 1f, 0f),
+                ObjectAnimator.ofFloat(inlineAnnouncementPanel, "scaleX", 1f, scaleX),
+                ObjectAnimator.ofFloat(inlineAnnouncementPanel, "scaleY", 1f, scaleY),
+                ObjectAnimator.ofFloat(inlineAnnouncementPanel, "translationX", 0f, endTX),
+                ObjectAnimator.ofFloat(inlineAnnouncementPanel, "translationY", 0f, endTY),
+                ObjectAnimator.ofFloat(inlineAnnouncementPanel, "radius", cardRadius, pillRadius)
+            );
+            morphBack.setDuration(280);
+            morphBack.setInterpolator(new AccelerateInterpolator(1.5f));
+
+            AnimatorSet fullSet = new AnimatorSet();
+            fullSet.playSequentially(contentFade, morphBack);
+            fullSet.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    overlayDim.setVisibility(View.GONE);
+                    inlineAnnouncementPanel.setVisibility(View.INVISIBLE);
+                    inlineAnnouncementPanel.setScaleX(1f);
+                    inlineAnnouncementPanel.setScaleY(1f);
+                    inlineAnnouncementPanel.setTranslationX(0f);
+                    inlineAnnouncementPanel.setTranslationY(0f);
+                    inlineAnnouncementPanel.setRadius(cardRadius);
+                    formContent.setAlpha(1f);
+                    btnPostPill.setVisibility(View.VISIBLE);
+                }
+            });
+            fullSet.start();
+        }
+    }
+
+    private void showEditAnnouncementInline(AnnouncementEntity announcement, View sourceCard) {
         // Parse existing attachments
         pendingAttachments = new JSONObject();
         if (announcement.getAttachmentJson() != null) {
@@ -292,39 +644,31 @@ public class HomeActivity extends AppCompatActivity {
             } catch (JSONException ignored) {}
         }
 
-        Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_add_announcement);
-        dialog.getWindow().setLayout(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
+        editSourceView = sourceCard;
 
-        activeDialog = dialog;
-
-        TextView dialogTitle = dialog.findViewById(R.id.dialogTitle);
+        // Setup the inline panel for editing
+        TextView dialogTitle = inlineAnnouncementPanel.findViewById(R.id.dialogTitle);
         dialogTitle.setText("Edit Announcement");
 
-        TextInputEditText editTitle = dialog.findViewById(R.id.editTitle);
-        TextInputEditText editContent = dialog.findViewById(R.id.editContent);
-        Button btnCancel = dialog.findViewById(R.id.btnCancel);
-        Button btnPost = dialog.findViewById(R.id.btnPost);
+        TextInputEditText editTitle = inlineAnnouncementPanel.findViewById(R.id.editTitle);
+        TextInputEditText editContent = inlineAnnouncementPanel.findViewById(R.id.editContent);
+        Button btnCancel = inlineAnnouncementPanel.findViewById(R.id.btnCancel);
+        Button btnPost = inlineAnnouncementPanel.findViewById(R.id.btnPost);
 
-        activeChipsContainer = dialog.findViewById(R.id.layoutAttachmentChips);
+        activeChipsContainer = inlineAnnouncementPanel.findViewById(R.id.layoutAttachmentChips);
+        activeChipsContainer.removeAllViews();
 
-        // Pre-fill with existing data (render HTML back to styled text)
+        // Pre-fill with existing data
         editTitle.setText(announcement.getTitle());
         editContent.setText(Html.fromHtml(announcement.getContent(), Html.FROM_HTML_MODE_COMPACT));
         btnPost.setText("Save");
 
-        // Setup formatting toolbar
-        setupFormattingToolbar(dialog, editContent);
-        // Setup attachment bar
-        setupAttachmentBar(dialog);
-        // Re-render existing attachment chips
+        // Setup formatting & attachment toolbars
+        setupFormattingToolbarInline(inlineAnnouncementPanel, editContent);
+        setupAttachmentBarInline(inlineAnnouncementPanel);
         refreshAttachmentChips();
 
-        btnCancel.setOnClickListener(v -> dialog.dismiss());
+        btnCancel.setOnClickListener(v -> hideInlinePanel());
 
         btnPost.setOnClickListener(v -> {
             String title = editTitle.getText() != null ? editTitle.getText().toString().trim() : "";
@@ -343,10 +687,11 @@ public class HomeActivity extends AppCompatActivity {
             }
 
             String attachJson = pendingAttachments.length() > 0 ? pendingAttachments.toString() : null;
-            updateAnnouncement(announcement.getId(), title, htmlContent, attachJson, dialog);
+            updateAnnouncementInline(announcement.getId(), title, htmlContent, attachJson);
         });
 
-        dialog.show();
+        // Morph from the announcement card
+        showInlinePanelFromCard(sourceCard);
     }
 
     // ==================== Rich Text Formatting ====================
@@ -357,6 +702,20 @@ public class HomeActivity extends AppCompatActivity {
         ImageButton btnIndent = dialog.findViewById(R.id.btnFormatIndent);
         ImageButton btnBullet = dialog.findViewById(R.id.btnFormatBulletList);
         ImageButton btnNumber = dialog.findViewById(R.id.btnFormatNumberList);
+
+        btnBold.setOnClickListener(v -> toggleBold(editContent));
+        btnUnderline.setOnClickListener(v -> toggleUnderline(editContent));
+        btnIndent.setOnClickListener(v -> applyIndent(editContent));
+        btnBullet.setOnClickListener(v -> insertBulletList(editContent));
+        btnNumber.setOnClickListener(v -> insertNumberedList(editContent));
+    }
+
+    private void setupFormattingToolbarInline(View panel, TextInputEditText editContent) {
+        ImageButton btnBold = panel.findViewById(R.id.btnFormatBold);
+        ImageButton btnUnderline = panel.findViewById(R.id.btnFormatUnderline);
+        ImageButton btnIndent = panel.findViewById(R.id.btnFormatIndent);
+        ImageButton btnBullet = panel.findViewById(R.id.btnFormatBulletList);
+        ImageButton btnNumber = panel.findViewById(R.id.btnFormatNumberList);
 
         btnBold.setOnClickListener(v -> toggleBold(editContent));
         btnUnderline.setOnClickListener(v -> toggleUnderline(editContent));
@@ -521,6 +880,13 @@ public class HomeActivity extends AppCompatActivity {
         dialog.findViewById(R.id.btnAttachLink).setOnClickListener(v -> showAddLinkDialog());
         dialog.findViewById(R.id.btnAttachAudio).setOnClickListener(v -> openAudioPicker());
         dialog.findViewById(R.id.btnAttachPoll).setOnClickListener(v -> showCreatePollDialog());
+    }
+
+    private void setupAttachmentBarInline(View panel) {
+        panel.findViewById(R.id.btnAttachFile).setOnClickListener(v -> openFilePicker());
+        panel.findViewById(R.id.btnAttachLink).setOnClickListener(v -> showAddLinkDialog());
+        panel.findViewById(R.id.btnAttachAudio).setOnClickListener(v -> openAudioPicker());
+        panel.findViewById(R.id.btnAttachPoll).setOnClickListener(v -> showCreatePollDialog());
     }
 
     // ── File Attachment ──
@@ -877,6 +1243,48 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    private void postAnnouncementInline(String title, String content, String attachJson) {
+        AppExecutors.diskIO().execute(() -> {
+            try {
+                announcementRepository.createAnnouncement(title, content, attachJson);
+                runOnUiThread(() -> {
+                    hideInlinePanel();
+                    Toast.makeText(this, "Announcement posted!", Toast.LENGTH_SHORT).show();
+                    currentDisplayCount = INITIAL_LOAD_COUNT;
+                });
+            } catch (SecurityException e) {
+                runOnUiThread(() ->
+                    Toast.makeText(this, "Only officers can post announcements", Toast.LENGTH_SHORT).show()
+                );
+            } catch (Exception e) {
+                runOnUiThread(() ->
+                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
+            }
+        });
+    }
+
+    private void updateAnnouncementInline(long announcementId, String title, String content,
+                                          String attachJson) {
+        AppExecutors.diskIO().execute(() -> {
+            try {
+                announcementRepository.updateAnnouncement(announcementId, title, content, attachJson);
+                runOnUiThread(() -> {
+                    hideInlinePanel();
+                    Toast.makeText(this, "Announcement updated!", Toast.LENGTH_SHORT).show();
+                });
+            } catch (SecurityException e) {
+                runOnUiThread(() ->
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
+            } catch (Exception e) {
+                runOnUiThread(() ->
+                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
+            }
+        });
+    }
+
     private void updateAnnouncement(long announcementId, String title, String content,
                                      String attachJson, Dialog dialog) {
         AppExecutors.diskIO().execute(() -> {
@@ -927,7 +1335,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     // ==================== Navigation ====================
-
+    
     private void navigateToLogin() {
         Intent intent = new Intent(this, Login.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -942,24 +1350,28 @@ public class HomeActivity extends AppCompatActivity {
             if (itemId == R.id.nav_home) {
                 return true;
             } else if (itemId == R.id.nav_calendar) {
-                startActivity(new Intent(this, CalendarActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
+                Intent i = new Intent(this, CalendarActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(i);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 return true;
             } else if (itemId == R.id.nav_resources) {
-                startActivity(new Intent(this, ResourcesActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
+                Intent i = new Intent(this, ResourcesActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(i);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 return true;
             } else if (itemId == R.id.nav_social) {
-                startActivity(new Intent(this, SocialActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
+                Intent i = new Intent(this, SocialActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(i);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 return true;
             } else if (itemId == R.id.nav_profile) {
-                startActivity(new Intent(this, ProfileActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
+                Intent i = new Intent(this, ProfileActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(i);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 return true;
             }
             return false;

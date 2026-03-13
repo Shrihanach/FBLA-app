@@ -189,6 +189,7 @@ public class EventDetailActivity extends AppCompatActivity {
             intent.putExtra("event_start", eventStart);
             intent.putExtra("event_end", eventEnd);
             startActivity(intent);
+            overridePendingTransition(0, 0);
             finish();
         });
 

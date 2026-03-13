@@ -65,11 +65,14 @@
 
         <!-- Custom Calendar with event dots -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardCalendar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="16dp"
             app:cardElevation="2dp"
             app:cardBackgroundColor="@color/white"
+            app:strokeColor="@color/navy"
+            app:strokeWidth="3dp"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="-12dp">
 
@@ -92,7 +95,7 @@
                         android:id="@+id/btnPrevMonth"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@android:drawable/ic_media_previous"
+                        android:src="@drawable/ic_chevron_left"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="Previous month"
                         app:tint="@color/navy" />
@@ -112,7 +115,7 @@
                         android:id="@+id/btnNextMonth"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@android:drawable/ic_media_next"
+                        android:src="@drawable/ic_chevron_right"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="Next month"
                         app:tint="@color/navy" />
@@ -300,6 +303,7 @@
             android:elevation="8dp"
             app:itemIconTint="@drawable/nav_item_color"
             app:itemTextColor="@drawable/nav_item_color"
+            app:itemRippleColor="@color/nav_ripple_color"
             app:menu="@menu/bottom_navigation"
             app:labelVisibilityMode="labeled" />
 
@@ -312,11 +316,318 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="76dp"
+        android:layout_marginBottom="132dp"
         android:src="@android:drawable/ic_input_add"
         android:visibility="gone"
         app:backgroundTint="@color/fbla_gold"
         app:tint="@color/navy"
         android:contentDescription="Add Event" />
+
+    <!-- Dim overlay for inline event form -->
+    <FrameLayout
+        android:id="@+id/overlayDim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true" />
+
+    <!-- Inline Add Event Panel -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/inlineEventPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="12dp"
+        app:cardBackgroundColor="@color/navy">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Top bar: X close and Save -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="8dp">
+
+                <ImageButton
+                    android:id="@+id/btnClosePanel"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@android:drawable/ic_menu_close_clear_cancel"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Close"
+                    app:tint="@color/white" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/btnSaveInline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:text="Save"
+                    android:textSize="14sp"
+                    android:textAllCaps="false"
+                    android:backgroundTint="@color/fbla_gold"
+                    android:textColor="@color/navy"
+                    style="@style/Widget.Material3.Button" />
+
+            </LinearLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="20dp"
+                    android:paddingBottom="24dp">
+
+                    <!-- Title input -->
+                    <EditText
+                        android:id="@+id/editInlineTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Add title and time"
+                        android:textColorHint="#80FFFFFF"
+                        android:textColor="@color/white"
+                        android:textSize="22sp"
+                        android:inputType="textCapSentences"
+                        android:background="@null"
+                        android:paddingVertical="10dp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#40FFFFFF" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="16dp" />
+
+                    <!-- Date & Time row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="4dp">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@android:drawable/ic_menu_recent_history"
+                            app:tint="#B3FFFFFF"
+                            android:layout_marginEnd="14dp"
+                            android:contentDescription="Time" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+
+                                <TextView
+                                    android:id="@+id/textInlineStartDate"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Select Date"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp"
+                                    android:padding="6dp"
+                                    android:background="?attr/selectableItemBackground" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=" – "
+                                    android:textColor="#B3FFFFFF"
+                                    android:textSize="14sp" />
+
+                                <TextView
+                                    android:id="@+id/textInlineEndDate"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Select Date"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp"
+                                    android:padding="6dp"
+                                    android:background="?attr/selectableItemBackground" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Does not repeat"
+                                android:textColor="#80FFFFFF"
+                                android:textSize="12sp"
+                                android:paddingStart="6dp"
+                                android:layout_marginTop="2dp" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/btnInlineAddTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="32dp"
+                            android:text="Add time"
+                            android:textColor="#B3FFFFFF"
+                            android:textSize="13sp"
+                            android:gravity="center"
+                            android:paddingHorizontal="14dp"
+                            android:background="@drawable/bg_chip_unselected" />
+
+                    </LinearLayout>
+
+                    <!-- Time row -->
+                    <LinearLayout
+                        android:id="@+id/layoutInlineTimeRow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:visibility="gone"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginBottom="4dp"
+                        android:paddingStart="36dp">
+
+                        <TextView
+                            android:id="@+id/textInlineStartTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Start time"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            android:padding="6dp"
+                            android:background="?attr/selectableItemBackground" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" – "
+                            android:textColor="#B3FFFFFF"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/textInlineEndTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="End time"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            android:padding="6dp"
+                            android:background="?attr/selectableItemBackground" />
+
+                    </LinearLayout>
+
+                    <!-- Divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#15FFFFFF"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp" />
+
+                    <!-- Description -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="top"
+                        android:layout_marginBottom="8dp">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@android:drawable/ic_menu_edit"
+                            app:tint="#B3FFFFFF"
+                            android:layout_marginEnd="14dp"
+                            android:layout_marginTop="10dp"
+                            android:contentDescription="Description" />
+
+                        <EditText
+                            android:id="@+id/editInlineDescription"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:hint="Add description"
+                            android:textColorHint="#80FFFFFF"
+                            android:textColor="@color/white"
+                            android:textSize="15sp"
+                            android:inputType="textMultiLine|textCapSentences"
+                            android:minLines="1"
+                            android:gravity="top"
+                            android:background="@null"
+                            android:paddingVertical="10dp" />
+
+                    </LinearLayout>
+
+                    <!-- Location -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@android:drawable/ic_menu_mylocation"
+                            app:tint="#B3FFFFFF"
+                            android:layout_marginEnd="14dp"
+                            android:contentDescription="Location" />
+
+                        <EditText
+                            android:id="@+id/editInlineLocation"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:hint="Add location"
+                            android:textColorHint="#80FFFFFF"
+                            android:textColor="@color/white"
+                            android:textSize="15sp"
+                            android:inputType="text"
+                            android:background="@null"
+                            android:paddingVertical="10dp" />
+
+                    </LinearLayout>
+
+                    <!-- Error Text -->
+                    <TextView
+                        android:id="@+id/textInlineError"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#FF6B6B"
+                        android:textSize="14sp"
+                        android:visibility="gone"
+                        android:layout_marginTop="12dp" />
+
+                </LinearLayout>
+
+            </ScrollView>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

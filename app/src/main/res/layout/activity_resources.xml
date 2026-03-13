@@ -26,6 +26,7 @@
         android:elevation="8dp"
         app:itemIconTint="@drawable/nav_item_color"
         app:itemTextColor="@drawable/nav_item_color"
+        app:itemRippleColor="@color/nav_ripple_color"
         app:menu="@menu/bottom_navigation"
         app:labelVisibilityMode="labeled" />
 

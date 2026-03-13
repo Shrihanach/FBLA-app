@@ -96,6 +96,20 @@
         <item name="android:textColor">@color/text_secondary</item>
     </style>
     
+    <!-- Floating dialog activity theme -->
+    <style name="Theme.FBLAApp.FloatingDialog" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.5</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="colorPrimary">@color/cobalt</item>
+        <item name="colorPrimaryDark">@color/navy</item>
+        <item name="colorAccent">@color/fbla_gold</item>
+    </style>
+
     <!-- Text Input style -->
     <style name="FBLATextInput" parent="Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="boxCornerRadiusTopStart">14dp</item>

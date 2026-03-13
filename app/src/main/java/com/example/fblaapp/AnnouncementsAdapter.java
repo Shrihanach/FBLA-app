@@ -48,7 +48,7 @@ public class AnnouncementsAdapter extends RecyclerView.Adapter<RecyclerView.View
     private OnAnnouncementClickListener listener;
 
     public interface OnAnnouncementClickListener {
-        void onEditClick(AnnouncementEntity announcement);
+        void onEditClick(AnnouncementEntity announcement, View itemView);
         void onDeleteClick(AnnouncementEntity announcement);
         void onShowMoreClick();
     }
@@ -178,7 +178,7 @@ public class AnnouncementsAdapter extends RecyclerView.Adapter<RecyclerView.View
             if (isOfficer && isCreator) {
                 btnEdit.setVisibility(View.VISIBLE);
                 btnEdit.setOnClickListener(v -> {
-                    if (listener != null) listener.onEditClick(announcement);
+                    if (listener != null) listener.onEditClick(announcement, itemView);
                 });
             } else {
                 btnEdit.setVisibility(View.GONE);

@@ -1,6 +1,7 @@
 package com.example.fblaapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
@@ -20,9 +21,12 @@ import com.example.fblaapp.data.AuthRepository;
 import com.example.fblaapp.data.UserEntity;
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Register extends AppCompatActivity {
 
-    private TextInputEditText editTextEmail, editTextPassword;
+    private TextInputEditText editTextName, editTextGrade, editTextEmail, editTextPassword;
     private Button buttonRegister;
     private ProgressBar progressBar;
     private TextView textViewLogin;
@@ -58,6 +62,8 @@ public class Register extends AppCompatActivity {
     }
 
     private void initViews() {
+        editTextName = findViewById(R.id.name);
+        editTextGrade = findViewById(R.id.grade);
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         buttonRegister = findViewById(R.id.btn_register);
@@ -78,10 +84,42 @@ public class Register extends AppCompatActivity {
     }
 
     private void attemptRegister() {
+        String name = editTextName.getText() != null ?
+                editTextName.getText().toString().trim() : "";
+        String grade = editTextGrade.getText() != null ?
+                editTextGrade.getText().toString().trim() : "";
         String email = editTextEmail.getText() != null ? 
                 editTextEmail.getText().toString().trim() : "";
         String password = editTextPassword.getText() != null ? 
                 editTextPassword.getText().toString() : "";
+
+        // Validate name
+        if (TextUtils.isEmpty(name)) {
+            Toast.makeText(this, "Enter your name", Toast.LENGTH_SHORT).show();
+            editTextName.requestFocus();
+            return;
+        }
+
+        // Validate grade
+        if (TextUtils.isEmpty(grade)) {
+            Toast.makeText(this, "Enter your grade", Toast.LENGTH_SHORT).show();
+            editTextGrade.requestFocus();
+            return;
+        }
+
+        int gradeNum;
+        try {
+            gradeNum = Integer.parseInt(grade);
+            if (gradeNum < 1 || gradeNum > 12) {
+                Toast.makeText(this, "Grade must be between 1 and 12", Toast.LENGTH_SHORT).show();
+                editTextGrade.requestFocus();
+                return;
+            }
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Enter a valid grade number", Toast.LENGTH_SHORT).show();
+            editTextGrade.requestFocus();
+            return;
+        }
 
         // Validate email
         if (TextUtils.isEmpty(email)) {
@@ -113,10 +151,6 @@ public class Register extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
         buttonRegister.setEnabled(false);
 
-        // Extract name from email (before @)
-        String name = email.split("@")[0];
-        name = name.substring(0, 1).toUpperCase() + name.substring(1);
-
         // Attempt registration (default role is MEMBER)
         UserEntity user = authRepository.register(name, email, password, UserEntity.ROLE_MEMBER);
 
@@ -124,12 +158,27 @@ public class Register extends AppCompatActivity {
         buttonRegister.setEnabled(true);
 
         if (user != null) {
-            // Registration successful
+            // Save grade to profile SharedPreferences
+            saveProfileData(name, grade);
+
             Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show();
             navigateToHome();
         } else {
             // Registration failed (email already exists)
             Toast.makeText(this, "Email already registered", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void saveProfileData(String name, String grade) {
+        SharedPreferences prefs = getSharedPreferences("FBLAConnectPrefs", MODE_PRIVATE);
+        try {
+            JSONObject profile = new JSONObject();
+            profile.put("name", name);
+            profile.put("grade", grade);
+            profile.put("role", "Member");
+            prefs.edit().putString("profile", profile.toString()).apply();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 

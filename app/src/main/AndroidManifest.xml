@@ -71,6 +71,7 @@
         <!-- Add/Edit Event Activity -->
         <activity
             android:name=".AddEditEventActivity"
+            android:theme="@style/Theme.FBLAApp.FloatingDialog"
             android:exported="false" />
         
         <!-- Event Detail Activity -->

@@ -38,12 +38,12 @@ public class EventRepository {
     }
 
     /**
-     * Check if current user is an officer.
-     * @return true if logged in user has OFFICER role.
+     * Check if current user has elevated privileges (Officer, President, or Teacher).
+     * @return true if logged in user has an elevated role.
      */
     public boolean isOfficer() {
         UserEntity currentUser = authRepository.getCurrentUser();
-        return currentUser != null && UserEntity.ROLE_OFFICER.equals(currentUser.getRole());
+        return currentUser != null && currentUser.isOfficer();
     }
 
     /**

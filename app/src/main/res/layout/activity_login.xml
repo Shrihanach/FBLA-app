@@ -214,6 +214,65 @@
 
             </LinearLayout>
 
+            <!-- Demo Accounts Section -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_marginTop="24dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Quick Login — Demo Accounts"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Officer Demo Button -->
+            <Button
+                android:id="@+id/btnDemoOfficer"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Login as Officer"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/cobalt"
+                android:layout_marginBottom="8dp"
+                style="@style/Widget.Material3.Button" />
+
+            <!-- Member Demo Button -->
+            <Button
+                android:id="@+id/btnDemoMember"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Login as Member"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:textColor="@color/navy"
+                android:backgroundTint="@color/fbla_gold"
+                android:layout_marginBottom="8dp"
+                style="@style/Widget.Material3.Button" />
+
+            <!-- Teacher Demo Button -->
+            <Button
+                android:id="@+id/btnDemoTeacher"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Login as Teacher"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/navy"
+                android:layout_marginBottom="8dp"
+                style="@style/Widget.Material3.Button" />
+
         </LinearLayout>
 
     </LinearLayout>

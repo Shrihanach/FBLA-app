@@ -454,29 +454,42 @@ public class ProfileActivity extends AppCompatActivity {
         bottomNavigation.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.nav_home) {
-                startActivity(new Intent(this, HomeActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
+                Intent i = new Intent(this, HomeActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(i);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
             } else if (itemId == R.id.nav_calendar) {
-                startActivity(new Intent(this, CalendarActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
+                Intent i = new Intent(this, CalendarActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(i);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
             } else if (itemId == R.id.nav_resources) {
-                startActivity(new Intent(this, ResourcesActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
+                Intent i = new Intent(this, ResourcesActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(i);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
             } else if (itemId == R.id.nav_social) {
-                startActivity(new Intent(this, SocialActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
+                Intent i = new Intent(this, SocialActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(i);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
             } else if (itemId == R.id.nav_profile) {
                 return true;
             }
             return false;
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Ensure the profile tab is highlighted when this activity is visible
+        if (bottomNavigation != null) {
+            bottomNavigation.setSelectedItemId(R.id.nav_profile);
+        }
     }
 }

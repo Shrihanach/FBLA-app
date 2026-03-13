@@ -41,20 +41,19 @@ public class AuthRepository {
                 }
             }
         }
+        // Always ensure demo accounts are seeded with correct roles
+        INSTANCE.seedDemoUsersIfNeeded();
         return INSTANCE;
     }
 
     /**
      * Seed demo users on first launch or after database reset.
-     * Always checks if users exist to handle destructive migrations.
+     * Always checks if users exist and ensures their roles are correct.
      */
     private void seedDemoUsersIfNeeded() {
-        // Always check if demo users exist (handles destructive migrations)
+        // --- Demo Member ---
         UserEntity existingMember = userDao.findByEmail("member@fbla.org");
-        UserEntity existingOfficer = userDao.findByEmail("officer@fbla.org");
-
         if (existingMember == null) {
-            // Create demo member
             UserEntity member = new UserEntity(
                     "Demo Member",
                     "member@fbla.org",
@@ -62,10 +61,14 @@ public class AuthRepository {
                     UserEntity.ROLE_MEMBER
             );
             userDao.insertUser(member);
+        } else if (!UserEntity.ROLE_MEMBER.equals(existingMember.getRole())) {
+            // Fix role if it was changed
+            userDao.updateUserRole(existingMember.getId(), UserEntity.ROLE_MEMBER);
         }
 
+        // --- Demo Officer ---
+        UserEntity existingOfficer = userDao.findByEmail("officer@fbla.org");
         if (existingOfficer == null) {
-            // Create demo officer
             UserEntity officer = new UserEntity(
                     "Demo Officer",
                     "officer@fbla.org",
@@ -73,6 +76,24 @@ public class AuthRepository {
                     UserEntity.ROLE_OFFICER
             );
             userDao.insertUser(officer);
+        } else if (!UserEntity.ROLE_OFFICER.equals(existingOfficer.getRole())) {
+            // Fix role if it was changed
+            userDao.updateUserRole(existingOfficer.getId(), UserEntity.ROLE_OFFICER);
+        }
+
+        // --- Demo Teacher ---
+        UserEntity existingTeacher = userDao.findByEmail("teacher@fbla.org");
+        if (existingTeacher == null) {
+            UserEntity teacher = new UserEntity(
+                    "Demo Teacher",
+                    "teacher@fbla.org",
+                    hashPassword("teacher123"),
+                    UserEntity.ROLE_TEACHER
+            );
+            userDao.insertUser(teacher);
+        } else if (!UserEntity.ROLE_TEACHER.equals(existingTeacher.getRole())) {
+            // Fix role if it was changed
+            userDao.updateUserRole(existingTeacher.getId(), UserEntity.ROLE_TEACHER);
         }
     }
 

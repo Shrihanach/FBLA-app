@@ -68,6 +68,12 @@ public class ResourcesFragment extends Fragment {
     private MaterialCardView cardRoleplayEvents;
     private MaterialCardView cardBAA;
 
+    // Views - BAA info
+    private ScrollView layoutBAAInfo;
+    private ImageButton btnBackBAA;
+    private Button btnOpenFBLAConnect;
+    private Button btnViewBAAResources;
+
     // Views - Objective testing grid
     private LinearLayout layoutObjectiveGrid;
     private ImageButton btnBackGrid;
@@ -478,6 +484,12 @@ public class ResourcesFragment extends Fragment {
         contentStudyMaterials = view.findViewById(R.id.contentStudyMaterials);
         btnOpenGuidelines = view.findViewById(R.id.btnOpenGuidelines);
 
+        // BAA info view
+        layoutBAAInfo = view.findViewById(R.id.layoutBAAInfo);
+        btnBackBAA = view.findViewById(R.id.btnBackBAA);
+        btnOpenFBLAConnect = view.findViewById(R.id.btnOpenFBLAConnect);
+        btnViewBAAResources = view.findViewById(R.id.btnViewBAAResources);
+
         // Resource list view
         layoutResourceList = view.findViewById(R.id.layoutResourceList);
         btnBack = view.findViewById(R.id.btnBack);
@@ -545,8 +557,8 @@ public class ResourcesFragment extends Fragment {
         // Roleplay Events → show 2-column grid
         cardRoleplayEvents.setOnClickListener(v -> openRoleplayEventsGrid());
 
-        // BAA → show Firestore resource list
-        cardBAA.setOnClickListener(v -> openCategory("Business Achievement Awards"));
+        // BAA → show BAA info page
+        cardBAA.setOnClickListener(v -> openBAAInfo());
     }
 
     private void hideAllLayouts() {
@@ -555,6 +567,7 @@ public class ResourcesFragment extends Fragment {
         layoutPresentationGrid.setVisibility(View.GONE);
         layoutRoleplayGrid.setVisibility(View.GONE);
         layoutEventDetail.setVisibility(View.GONE);
+        layoutBAAInfo.setVisibility(View.GONE);
         layoutResourceList.setVisibility(View.GONE);
     }
 
@@ -571,6 +584,11 @@ public class ResourcesFragment extends Fragment {
     private void openRoleplayEventsGrid() {
         hideAllLayouts();
         layoutRoleplayGrid.setVisibility(View.VISIBLE);
+    }
+
+    private void openBAAInfo() {
+        hideAllLayouts();
+        layoutBAAInfo.setVisibility(View.VISIBLE);
     }
 
     private void openCategory(String category) {
@@ -593,10 +611,28 @@ public class ResourcesFragment extends Fragment {
     private void setupClickListeners() {
         btnRetry.setOnClickListener(v -> loadResources());
         fabUpload.setOnClickListener(v -> showUploadDialog());
-        btnBack.setOnClickListener(v -> showCategoryCards());
+        btnBack.setOnClickListener(v -> {
+            if ("Business Achievement Awards".equals(currentCategory)) {
+                openBAAInfo(); // Go back to BAA info page
+            } else {
+                showCategoryCards();
+            }
+        });
         btnBackGrid.setOnClickListener(v -> showCategoryCards());
         btnBackPresentationGrid.setOnClickListener(v -> showCategoryCards());
         btnBackRoleplayGrid.setOnClickListener(v -> showCategoryCards());
+
+        // BAA info back button
+        btnBackBAA.setOnClickListener(v -> showCategoryCards());
+
+        // Open FBLA Connect button
+        btnOpenFBLAConnect.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://connect.fbla.org"));
+            startActivity(intent);
+        });
+
+        // View BAA Resources button → opens the resource list filtered to BAA
+        btnViewBAAResources.setOnClickListener(v -> openCategory("Business Achievement Awards"));
 
         // Event detail back button → go back to whichever grid we came from
         btnBackEventDetail.setOnClickListener(v -> {
@@ -758,7 +794,7 @@ public class ResourcesFragment extends Fragment {
 
     private void showUploadDialog() {
         if (!isOfficer) {
-            Toast.makeText(getContext(), "Only officers can upload resources", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Only officers and teachers can upload resources", Toast.LENGTH_SHORT).show();
             return;
         }
 

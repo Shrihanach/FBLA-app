@@ -82,11 +82,11 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- ===== CHAPTER CHANNELS SECTION ===== -->
+            <!-- ===== CHAPTER INSTAGRAM SECTION ===== -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Chapter Channels"
+                android:text="Chapter Instagram"
                 android:textColor="@color/navy"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -102,6 +102,7 @@
 
                 <!-- Big Instagram Platform Card -->
                 <LinearLayout
+                    android:id="@+id/cardInstagramHeader"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/social_card_instagram"
@@ -263,7 +264,8 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/latest_post_background"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -329,6 +331,101 @@
 
             </LinearLayout>
 
+            <!-- ===== EMBEDDED INSTAGRAM FEED ===== -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Instagram Feed"
+                android:textColor="@color/navy"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="12dp"
+                android:paddingHorizontal="4dp" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardInstagramFeed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeColor="@color/divider"
+                app:strokeWidth="1dp"
+                android:layout_marginBottom="6dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Loading indicator for WebView -->
+                    <ProgressBar
+                        android:id="@+id/progressInstagramFeed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginVertical="24dp"
+                        android:indeterminateTint="@color/cobalt"
+                        android:visibility="gone" />
+
+                    <!-- Embedded Instagram WebView -->
+                    <WebView
+                        android:id="@+id/webViewInstagram"
+                        android:layout_width="match_parent"
+                        android:layout_height="600dp"
+                        android:visibility="gone" />
+
+                    <!-- Error state if WebView fails -->
+                    <LinearLayout
+                        android:id="@+id/layoutFeedError"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="24dp"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/ic_social_instagram"
+                            android:alpha="0.4"
+                            android:contentDescription="Instagram" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Could not load Instagram feed"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="12dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tap below to view on Instagram"
+                            android:textColor="@color/text_hint"
+                            android:textSize="12sp"
+                            android:layout_marginTop="4dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnFeedOpenInstagram"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="12dp"
+                            android:text="Open Instagram"
+                            android:textAllCaps="false"
+                            android:textSize="13sp"
+                            app:cornerRadius="12dp"
+                            app:backgroundTint="@color/cobalt" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Spacing -->
             <View
@@ -669,6 +766,7 @@
         android:elevation="8dp"
         app:itemIconTint="@drawable/nav_item_color"
         app:itemTextColor="@drawable/nav_item_color"
+        app:itemRippleColor="@color/nav_ripple_color"
         app:menu="@menu/bottom_navigation"
         app:labelVisibilityMode="labeled" />
 

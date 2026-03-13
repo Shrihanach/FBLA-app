@@ -1,17 +1,36 @@
 package com.example.fblaapp;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.Animator;
+import android.graphics.Rect;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.DecelerateInterpolator;
+
+import com.google.android.material.card.MaterialCardView;
+import android.webkit.CookieManager;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,6 +98,17 @@ public class SocialActivity extends AppCompatActivity {
     private TextView textInstagramPostSnippet;
     private TextView textInstagramPostTime;
 
+    // Embedded Instagram feed views
+    private WebView webViewInstagram;
+    private ProgressBar progressInstagramFeed;
+    private LinearLayout layoutFeedError;
+    private MaterialButton btnFeedOpenInstagram;
+
+    // Morph animation views
+    private View cardInstagramHeader;
+    private MaterialCardView cardInstagramFeed;
+    private boolean feedMorphPlayed = false;
+
     private SharedPreferences socialPrefs;
     private AuthRepository authRepository;
     private AnnouncementRepository announcementRepository;
@@ -93,6 +123,8 @@ public class SocialActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private ListenerRegistration igFeedListener;
     private ExecutorService executor;
+    private Handler uiHandler;
+    private boolean feedLoaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,11 +137,13 @@ public class SocialActivity extends AppCompatActivity {
         eventRepository = EventRepository.getInstance(this);
         db = FirebaseFirestore.getInstance();
         executor = Executors.newSingleThreadExecutor();
+        uiHandler = new Handler(Looper.getMainLooper());
 
         initViews();
         loadChapterLinks();
         setupUserRole();
         setupChapterChannelButtons();
+        setupInstagramWebView();
         setupShareActions();
         setupNationalLinks();
         setupBottomNavigation();
@@ -134,6 +168,16 @@ public class SocialActivity extends AppCompatActivity {
         textInstagramPostTitle = findViewById(R.id.textInstagramPostTitle);
         textInstagramPostSnippet = findViewById(R.id.textInstagramPostSnippet);
         textInstagramPostTime = findViewById(R.id.textInstagramPostTime);
+
+        // Embedded Instagram feed views
+        webViewInstagram = findViewById(R.id.webViewInstagram);
+        progressInstagramFeed = findViewById(R.id.progressInstagramFeed);
+        layoutFeedError = findViewById(R.id.layoutFeedError);
+        btnFeedOpenInstagram = findViewById(R.id.btnFeedOpenInstagram);
+
+        // Morph animation views
+        cardInstagramHeader = findViewById(R.id.cardInstagramHeader);
+        cardInstagramFeed = findViewById(R.id.cardInstagramFeed);
     }
 
     private void loadChapterLinks() {
@@ -188,6 +232,285 @@ public class SocialActivity extends AppCompatActivity {
             } else {
                 openDeepLink(instagramUrl, "com.instagram.android");
             }
+        });
+    }
+
+    // ==================== Embedded Instagram Feed ====================
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private void setupInstagramWebView() {
+        // Enable third-party cookies (required for Instagram)
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.setAcceptCookie(true);
+        cookieManager.setAcceptThirdPartyCookies(webViewInstagram, true);
+
+        // Configure WebView settings for Instagram
+        WebSettings settings = webViewInstagram.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setDomStorageEnabled(true);
+        settings.setLoadWithOverviewMode(true);
+        settings.setUseWideViewPort(true);
+        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        settings.setMediaPlaybackRequiresUserGesture(false);
+        settings.setUserAgentString(
+                "Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 " +
+                "(KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36");
+
+        // Handle page loading states
+        webViewInstagram.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                // Don't show spinner — the morph animation masks loading
+                layoutFeedError.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                feedLoaded = true;
+                progressInstagramFeed.setVisibility(View.GONE);
+
+                // Morph the feed card open, then fade in the WebView
+                morphFeedCardOpen(() -> {
+                    webViewInstagram.setAlpha(0f);
+                    webViewInstagram.setVisibility(View.VISIBLE);
+                    webViewInstagram.animate()
+                            .alpha(1f)
+                            .setDuration(250)
+                            .start();
+                });
+
+                // Inject CSS to hide Instagram chrome + JS to intercept post clicks
+                String injectJs =
+                        "javascript:(function() {" +
+                        // --- CSS: hide nav, login walls, banners, footer ---
+                        "  var style = document.createElement('style');" +
+                        "  style.innerHTML = '" +
+                        "    nav, header { display: none !important; } " +
+                        "    div[role=\"presentation\"] { display: none !important; } " +
+                        "    div[role=\"dialog\"] { display: none !important; } " +
+                        "    div[class*=\"cookie\"] { display: none !important; } " +
+                        "    footer { display: none !important; } " +
+                        "    a[href*=\"get-app\"] { display: none !important; } " +
+                        "    div[class*=\"Banner\"] { display: none !important; } " +
+                        "    body { padding-top: 0 !important; margin-top: 0 !important; } " +
+                        "  ';" +
+                        "  document.head.appendChild(style);" +
+                        // --- Remove login overlays after delay ---
+                        "  setTimeout(function() {" +
+                        "    var overlays = document.querySelectorAll('div[role=\"presentation\"], div[role=\"dialog\"]');" +
+                        "    overlays.forEach(function(el) { el.remove(); });" +
+                        "    document.body.style.overflow = 'auto';" +
+                        "  }, 1500);" +
+                        // --- Intercept clicks on post/reel links ---
+                        "  document.addEventListener('click', function(e) {" +
+                        "    var target = e.target;" +
+                        "    var link = null;" +
+                        // Walk up the DOM to find the nearest <a> tag
+                        "    while (target && target !== document) {" +
+                        "      if (target.tagName === 'A' && target.href) {" +
+                        "        link = target;" +
+                        "        break;" +
+                        "      }" +
+                        "      target = target.parentElement;" +
+                        "    }" +
+                        "    if (link) {" +
+                        "      var href = link.href;" +
+                        // Check if it's a post, reel, or story link
+                        "      if (href.match(/instagram\\.com\\/(p|reel|reels|stories)\\/[^/]+/)) {" +
+                        "        e.preventDefault();" +
+                        "        e.stopPropagation();" +
+                        // Navigate using a custom scheme so shouldOverrideUrlLoading catches it
+                        "        window.location.href = 'openpost://' + href;" +
+                        "        return false;" +
+                        "      }" +
+                        "    }" +
+                        "  }, true);" +  // 'true' = capture phase, runs before Instagram's handlers
+                        "})()";
+                view.evaluateJavascript(injectJs, null);
+            }
+
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                super.onReceivedError(view, errorCode, description, failingUrl);
+                Log.w(TAG, "Feed load error: " + errorCode + " - " + description + " url=" + failingUrl);
+                // Only show error state if the main page failed (not sub-resources)
+                if (failingUrl != null && failingUrl.contains("instagram.com") && failingUrl.startsWith("https://")) {
+                    progressInstagramFeed.setVisibility(View.GONE);
+                    webViewInstagram.setVisibility(View.GONE);
+                    morphFeedCardOpen(() -> {
+                        layoutFeedError.setVisibility(View.VISIBLE);
+                    });
+                }
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                String url = request.getUrl().toString();
+                Log.d(TAG, "WebView URL: " + url);
+
+                // Handle our custom openpost:// scheme — user tapped a post
+                if (url.startsWith("openpost://")) {
+                    // Strip the custom scheme to get the real URL
+                    String postUrl = url.substring("openpost://".length());
+                    if (!postUrl.startsWith("http")) {
+                        postUrl = "https://" + postUrl;
+                    }
+                    Log.d(TAG, "Opening post externally: " + postUrl);
+                    try {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(postUrl));
+                        startActivity(browserIntent);
+                    } catch (Exception e) {
+                        Log.w(TAG, "Could not open post URL: " + e.getMessage());
+                    }
+                    return true;
+                }
+
+                // Handle intent:// deep links — Instagram uses these when you tap posts
+                if (url.startsWith("intent://")) {
+                    try {
+                        Intent intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
+                        if (intent != null) {
+                            // Check for a browser fallback URL first
+                            String fallbackUrl = intent.getStringExtra("browser_fallback_url");
+                            if (fallbackUrl != null && !fallbackUrl.isEmpty()
+                                    && fallbackUrl.contains("instagram.com")) {
+                                // Open in browser/IG app instead of loading in WebView
+                                try {
+                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(fallbackUrl)));
+                                } catch (Exception e) {
+                                    view.loadUrl(fallbackUrl);
+                                }
+                                return true;
+                            }
+                            // Convert intent data to an https URL if it's Instagram
+                            Uri data = intent.getData();
+                            if (data != null) {
+                                String host = data.getHost();
+                                String path = data.getPath();
+                                if (host != null && host.contains("instagram.com")
+                                        && path != null && !path.isEmpty()) {
+                                    String igUrl = "https://www.instagram.com" + path;
+                                    try {
+                                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(igUrl)));
+                                    } catch (Exception e) {
+                                        view.loadUrl(igUrl);
+                                    }
+                                    return true;
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        Log.w(TAG, "Failed to parse intent URL: " + e.getMessage());
+                    }
+                    return true;
+                }
+
+                // Block other non-http schemes (instagram://, market://, etc.)
+                if (!url.startsWith("https://") && !url.startsWith("http://")) {
+                    Log.d(TAG, "Blocked non-http scheme: " + url);
+                    return true;
+                }
+
+                // Keep Instagram pages inside the WebView
+                if (url.contains("instagram.com") || url.contains("cdninstagram.com")) {
+                    return false;
+                }
+
+                // Block everything else (ads, tracking redirects, etc.)
+                Log.d(TAG, "Blocked external URL: " + url);
+                return true;
+            }
+        });
+
+        webViewInstagram.setWebChromeClient(new WebChromeClient());
+
+        // Error state — open Instagram externally
+        btnFeedOpenInstagram.setOnClickListener(v -> {
+            openDeepLink(instagramUrl, "com.instagram.android");
+        });
+
+        // Load the Instagram profile feed
+        loadInstagramFeed();
+    }
+
+    private void loadInstagramFeed() {
+        String username = instagramHandle.replace("@", "");
+        String profileUrl = "https://www.instagram.com/" + username + "/";
+
+        // Hide spinner — we use the morph animation instead
+        progressInstagramFeed.setVisibility(View.GONE);
+        layoutFeedError.setVisibility(View.GONE);
+        webViewInstagram.setVisibility(View.GONE);
+        feedLoaded = false;
+
+        // Collapse the feed card initially (scale to 0 height from top)
+        if (!feedMorphPlayed) {
+            cardInstagramFeed.setPivotX(cardInstagramFeed.getWidth() / 2f);
+            cardInstagramFeed.setPivotY(0f);
+            cardInstagramFeed.setScaleY(0f);
+            cardInstagramFeed.setAlpha(0f);
+        }
+
+        Log.d(TAG, "Loading Instagram feed: " + profileUrl);
+        webViewInstagram.loadUrl(profileUrl);
+
+        // Safety timeout — show error state after 15 seconds if feed doesn't load
+        uiHandler.removeCallbacksAndMessages(null);
+        uiHandler.postDelayed(() -> {
+            if (!feedLoaded) {
+                Log.w(TAG, "Feed load timeout — showing error state");
+                // Expand the feed card if it hasn't been yet, then show error
+                if (!feedMorphPlayed) {
+                    morphFeedCardOpen(() -> {
+                        layoutFeedError.setVisibility(View.VISIBLE);
+                    });
+                } else {
+                    layoutFeedError.setVisibility(View.VISIBLE);
+                }
+            }
+        }, 15_000);
+    }
+
+    /**
+     * Morphs the feed card open from the Instagram header card position.
+     * The card expands from scaleY=0 (collapsed) to scaleY=1 (full height),
+     * giving the appearance of "growing" out of the header card above.
+     */
+    private void morphFeedCardOpen(Runnable onComplete) {
+        if (feedMorphPlayed) {
+            if (onComplete != null) onComplete.run();
+            return;
+        }
+        feedMorphPlayed = true;
+
+        // Ensure the feed card is visible but collapsed
+        cardInstagramFeed.setVisibility(View.VISIBLE);
+
+        // Wait for layout pass to get correct dimensions
+        cardInstagramFeed.post(() -> {
+            cardInstagramFeed.setPivotX(cardInstagramFeed.getWidth() / 2f);
+            cardInstagramFeed.setPivotY(0f);
+
+            ObjectAnimator scaleY = ObjectAnimator.ofFloat(cardInstagramFeed, "scaleY", 0f, 1f);
+            ObjectAnimator alpha = ObjectAnimator.ofFloat(cardInstagramFeed, "alpha", 0f, 1f);
+
+            // Subtle slide up from below the header
+            ObjectAnimator transY = ObjectAnimator.ofFloat(cardInstagramFeed, "translationY", 60f, 0f);
+
+            AnimatorSet set = new AnimatorSet();
+            set.playTogether(scaleY, alpha, transY);
+            set.setDuration(400);
+            set.setInterpolator(new DecelerateInterpolator(2f));
+            set.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if (onComplete != null) onComplete.run();
+                }
+            });
+            set.start();
         });
     }
 
@@ -437,8 +760,7 @@ public class SocialActivity extends AppCompatActivity {
                 JSONArray edges = captionObj.getJSONArray("edges");
                 if (edges.length() > 0) {
                     String text = edges.getJSONObject(0).getJSONObject("node").getString("text");
-                    // Truncate for preview
-                    return text.length() > 200 ? text.substring(0, 200) + "…" : text;
+                    return text;
                 }
             }
         } catch (Exception ignored) {}
@@ -519,6 +841,7 @@ public class SocialActivity extends AppCompatActivity {
         // Try cache first
         String cached = socialPrefs.getString(KEY_CACHED_IG_CAPTION, "");
         long cachedTs = socialPrefs.getLong(KEY_CACHED_IG_TIMESTAMP, 0);
+
         if (!cached.isEmpty()) {
             textInstagramPostTitle.setText("Latest Post");
             textInstagramPostSnippet.setText(cached);
@@ -696,6 +1019,7 @@ public class SocialActivity extends AppCompatActivity {
             // Reload
             loadChapterLinks();
             updateHandleViews();
+            loadInstagramFeed(); // Reload WebView with new handle
 
             Toast.makeText(this, "Social links updated!", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
@@ -854,6 +1178,13 @@ public class SocialActivity extends AppCompatActivity {
         if (igFeedListener != null) igFeedListener.remove();
         // Shut down background executor
         if (executor != null && !executor.isShutdown()) executor.shutdown();
+        // Cancel any pending timeout callbacks
+        if (uiHandler != null) uiHandler.removeCallbacksAndMessages(null);
+        // Clean up WebView to prevent memory leaks
+        if (webViewInstagram != null) {
+            webViewInstagram.stopLoading();
+            webViewInstagram.destroy();
+        }
     }
 
     // ==================== Bottom Navigation ====================
@@ -863,26 +1194,30 @@ public class SocialActivity extends AppCompatActivity {
         bottomNavigation.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.nav_home) {
-                startActivity(new Intent(this, HomeActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
+                Intent i = new Intent(this, HomeActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(i);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
             } else if (itemId == R.id.nav_calendar) {
-                startActivity(new Intent(this, CalendarActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
+                Intent i = new Intent(this, CalendarActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(i);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
             } else if (itemId == R.id.nav_resources) {
-                startActivity(new Intent(this, ResourcesActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
+                Intent i = new Intent(this, ResourcesActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(i);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
             } else if (itemId == R.id.nav_social) {
                 return true;
             } else if (itemId == R.id.nav_profile) {
-                startActivity(new Intent(this, ProfileActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
+                Intent i = new Intent(this, ProfileActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(i);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 return true;
             }
             return false;
